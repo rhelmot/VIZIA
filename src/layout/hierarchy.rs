@@ -11,10 +11,13 @@ impl<'a> Hierarchy<'a> for crate::Tree {
     type ChildIter = ChildIterator<'a>;
 
     fn down_iter(&'a self) -> Self::DownIter {
-        TreeIterator {
+        let mut iterator = TreeIterator {
             tree: self,
             current_node: Some(Entity::root()),
-        }
+        };
+        iterator.next();
+
+        iterator
     }
 
     fn up_iter(&'a self) -> Self::UpIter {

@@ -3,8 +3,8 @@ use crate::{BoundingBox, Context, Display, Entity, Rule, Tree, TreeExt, Visibili
 // use crate::{BoundingBox, Display, Entity, Overflow, PropGet, PropSet, Property, SelectorRelation, Rule, Selector, Cx, Tree, TreeExt, Visibility};
 
 
-pub fn apply_z_ordering(cx: &mut Context, tree: &Tree) {
-    for entity in tree.into_iter() {
+pub fn apply_z_ordering(cx: &mut Context, tree: &Tree, root: Entity) {
+    for entity in root.tree_iter(tree) {
         if entity == Entity::root() {
             continue;
         }
@@ -82,8 +82,8 @@ pub fn apply_clipping(cx: &mut Context, tree: &Tree) {
     }
 }
 
-pub fn apply_visibility(cx: &mut Context, tree: &Tree) {
-    let mut draw_tree: Vec<Entity> = tree.into_iter().collect();
+pub fn apply_visibility(cx: &mut Context, tree: &Tree, root: Entity) {
+    let mut draw_tree: Vec<Entity> = root.tree_iter(tree).collect();
     draw_tree.sort_by_cached_key(|entity| cx.cache.get_z_index(*entity));
 
     for entity in draw_tree.into_iter() {
@@ -177,10 +177,10 @@ fn check_match(cx: &Context, entity: Entity, selector: &Selector) -> bool {
     return true;
 }
 
-pub fn apply_styles(cx: &mut Context, tree: &Tree) {
+pub fn apply_styles(cx: &mut Context, tree: &Tree, root: Entity) {
     //println!("RESTYLE");
     // Loop through all entities
-    for entity in tree.into_iter() {
+    for entity in root.tree_iter(tree) {
         // Skip the root
         if entity == Entity::root() {
             continue;

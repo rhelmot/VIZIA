@@ -120,6 +120,39 @@ impl Context {
 
     }
 
+    /// Get stored data from the context.
+    pub fn data_mut<T: 'static>(&mut self) -> Option<&mut T> {
+
+        let mut found_entity = None;
+
+        for entity in self.current.parent_iter(&self.tree) {
+            //println!("Current: {} {:?}", entity, entity.parent(&self.tree));
+            if let Some(data_list) = self.data.model_data.get(entity) {
+                for (_, model) in data_list.iter() {
+                    if let Some(store) = model.downcast_ref::<Store<T>>() {
+                        //return Some(&store.data);
+                        found_entity = Some(entity);
+                        break;
+                    }
+                }
+            }         
+        }
+
+        if let Some(entity) = found_entity {
+            //println!("Current: {} {:?}", entity, entity.parent(&self.tree));
+            if let Some(data_list) = self.data.model_data.get_mut(entity) {
+                for (_, model) in data_list.iter_mut() {
+                    if let Some(store) = model.downcast::<Store<T>>() {
+                        return Some(&mut store.data);
+                    }
+                }
+            }         
+        }
+
+        None
+
+    }
+
     pub fn emit<M: Message>(&mut self, message: M) {
         self.event_queue.push_back(Event::new(message).target(self.current).origin(self.current).propagate(Propagation::Up));
     }

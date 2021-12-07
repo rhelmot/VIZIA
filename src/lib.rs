@@ -30,6 +30,9 @@ pub use context::*;
 mod window;
 pub use window::*;
 
+mod raw_window;
+pub use raw_window::*;
+
 mod application;
 pub use application::*;
 

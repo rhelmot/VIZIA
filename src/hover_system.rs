@@ -12,7 +12,7 @@ pub fn apply_hover(cx: &mut Context) {
     let cursorx = cx.mouse.cursorx;
     let cursory = cx.mouse.cursory;
 
-    let mut hovered_widget = Entity::root();
+    let mut hovered_widget = Entity::new(1,0);
 
     for entity in draw_tree.into_iter() {
 

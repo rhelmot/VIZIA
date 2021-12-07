@@ -363,7 +363,7 @@ impl CachedData {
     /// Entities can specify a z-index with `entity.set_z_index(state, value)`. 
     /// The z_order_system then determines the z-index of child entities based on their parent and any specified z-index.
     pub(crate) fn get_z_index(&self, entity: Entity) -> i32 {
-        self.z_index.get(entity).cloned().unwrap()
+        self.z_index.get(entity).cloned().unwrap_or_default()
     }
 
     pub(crate) fn get_child_width_sum(&self, entity: Entity) -> f32 {
@@ -436,7 +436,7 @@ impl CachedData {
 
     /// Returns the opacity of the entity.
     pub fn get_opacity(&self, entity: Entity) -> f32 {
-        self.opacity.get(entity).cloned().unwrap()
+        self.opacity.get(entity).cloned().unwrap_or_default()
     }
 
     pub(crate) fn get_horizontal_free_space(&self, entity: Entity) -> f32 {
@@ -675,14 +675,14 @@ impl CachedData {
         self.visibility
             .get(entity)
             .cloned()
-            .unwrap()
+            .unwrap_or_default()
     }
 
     pub fn get_display(&self, entity: Entity) -> Display {
         self.display
             .get(entity)
             .cloned()
-            .unwrap()
+            .unwrap_or_default()
     }
 
     pub(crate) fn set_visibility(&mut self, entity: Entity, val: Visibility) {

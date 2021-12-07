@@ -3,7 +3,7 @@
 // use crate::{BindEvent, Context, Display, Entity, Event, FontOrId, Propagation, State, Tree, TreeExt, Visibility, WindowEvent, entity};
 
 
-use crate::{Context, Event, Propagation, Tree, TreeExt};
+use crate::{Context, Event, Propagation, Tree, TreeExt, AppEvent};
 
 
 /// Dispatches events to widgets.
@@ -29,7 +29,7 @@ impl EventManager {
         }
     }
 
-    pub fn flush_events(&mut self, context: &mut Context) {
+    pub fn flush_events(&mut self, context: &mut Context) -> Vec<Event> {
 
         // Clear the event queue in the event manager
         self.event_queue.clear();
@@ -44,8 +44,14 @@ impl EventManager {
 
         self.tree = context.tree.clone();
 
+        let mut app_events = Vec::new();
+
         // Loop over the events in the event queue
         'events: for event in self.event_queue.iter_mut() {
+
+            if let Some(app_event) = event.message.downcast::<AppEvent>() {
+                app_events.push(Event::new(*app_event).target(event.target).origin(event.origin));
+            }
 
             if event.trace {
                 println!("Event: {:?}", event);
@@ -80,10 +86,11 @@ impl EventManager {
             // }
 
             // Propagate up from target to root (not including target)
+            
             if event.propagation == Propagation::Up {
                 // Walk up the tree from parent to parent
                 for entity in target.parent_iter(&self.tree) {
-                    
+                    //println!("Up: {:?} {:?}", entity, self.tree);
                     // Skip the target entity
                     if entity == event.target {
                         continue;
@@ -120,5 +127,7 @@ impl EventManager {
                 }
             }
         }
+
+        app_events
     }
 }

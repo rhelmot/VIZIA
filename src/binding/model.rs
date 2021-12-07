@@ -20,6 +20,21 @@ pub trait Model: 'static + Sized {
         
     }
 
+    fn build_root(self, cx: &mut Context) {
+        if let Some(data_list) = cx.data.model_data.get_mut(Entity::root()) {
+            // This might be a bad idea
+            // if let Some(_) = data_list.get(&TypeId::of::<Self>()) {
+            //     return;
+            // }
+            data_list.insert(TypeId::of::<Self>(), Box::new(Store::new(self)));
+        } else {
+            let mut data_list: HashMap<TypeId, Box<dyn ModelData>> = HashMap::new();
+            data_list.insert(TypeId::of::<Self>(), Box::new(Store::new(self)));
+            cx.data.model_data.insert(Entity::root(), data_list).expect("Failed to add data");
+        }
+        
+    }
+
     fn event(&mut self, cx: &mut Context, event: &mut Event) {
 
     }
@@ -68,7 +83,7 @@ impl dyn ModelData {
     // Casts a message to the specified type if the message is of that type
     pub fn downcast<T>(&mut self) -> Option<&mut T>
     where
-        T: ModelData + 'static,
+        T: Any + 'static,
     {
         if self.is::<T>() {
             unsafe { Some(&mut *(self as *mut dyn ModelData as *mut T)) }
