@@ -67,6 +67,12 @@ checkbox {
     color: black;
 }
 
+group {
+    width: 1s;
+    height: 1s;
+    child-space: 1s;
+}
+
 hstack {
     width: 1s;
     height: 1s;
