@@ -43,12 +43,14 @@ fn main() {
 
         VStack::new(cx, move |cx| {
             List::new(cx, AppData::list, move |cx, item| {
-                let item_text = item.get(cx).to_string();
-                let item_index = item.index();
                 VStack::new(cx, move |cx| {
                     Binding::new(cx, AppData::selected, move |cx, selected| {
                         let selected = *selected.get(cx);
-                        Label::new(cx, &item_text)
+                        let item_index = item.index();
+                        let item_text = item.get(cx).to_string();
+                        HStack::new(cx, move |cx| {
+                            Label::new(cx, &item_text);
+                        })
                             // Set the checked state based on whether this item is selected
                             .checked(if selected == item_index { true } else { false })
                             // Set the selected item to this one if pressed

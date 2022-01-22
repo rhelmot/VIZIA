@@ -198,6 +198,7 @@ impl Application {
         let mut click_pos = (0.0, 0.0);
 
         event_loop.run(move |event, _, control_flow|{
+            dbg!(&event);
 
             if should_poll {
                 *control_flow = ControlFlow::Poll;
