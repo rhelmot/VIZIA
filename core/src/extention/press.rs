@@ -5,15 +5,15 @@ use morphorm::GeometryChanged;
 use crate::{Context, Entity, Event, Handle, MouseButton, View, ViewHandler, WindowEvent};
 
 // Press
-pub struct Press<V: View> {
+pub struct Press<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Press<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Press<V>>
+impl<'b, V: View<'b>> Press<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Press<'b, V>>
     where
         F: 'b + Fn(&mut Context),
     {
@@ -34,7 +34,7 @@ impl<V: View> Press<V> {
     }
 }
 
-impl<V: View> View for Press<V> {
+impl<'b, V: View<'b>> View<'b> for Press<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -67,15 +67,15 @@ impl<V: View> View for Press<V> {
 }
 
 // Release
-pub struct Release<V: View> {
+pub struct Release<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Release<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Release<V>>
+impl<'b, V: View<'b>> Release<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Release<'b, V>>
     where
         F: 'static + Fn(&mut Context),
     {
@@ -96,7 +96,7 @@ impl<V: View> Release<V> {
     }
 }
 
-impl<V: View> View for Release<V> {
+impl<'b, V: View<'b>> View<'b> for Release<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -129,15 +129,15 @@ impl<V: View> View for Release<V> {
 }
 
 // Hover
-pub struct Hover<V: View> {
+pub struct Hover<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Hover<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Hover<V>>
+impl<'b, V: View<'b>> Hover<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Hover<'b, V>>
     where
         F: 'static + Fn(&mut Context),
     {
@@ -158,7 +158,7 @@ impl<V: View> Hover<V> {
     }
 }
 
-impl<V: View> View for Hover<V> {
+impl<'b, V: View<'b>> View<'b> for Hover<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -189,15 +189,15 @@ impl<V: View> View for Hover<V> {
 }
 
 // Hover
-pub struct Over<V: View> {
+pub struct Over<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Over<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Over<V>>
+impl<'b, V: View<'b>> Over<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Over<'b, V>>
     where
         F: 'static + Fn(&mut Context),
     {
@@ -218,7 +218,7 @@ impl<V: View> Over<V> {
     }
 }
 
-impl<V: View> View for Over<V> {
+impl<'b, V: View<'b>> View<'b> for Over<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -247,15 +247,15 @@ impl<V: View> View for Over<V> {
 }
 
 // Leave
-pub struct Leave<V: View> {
+pub struct Leave<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Leave<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Leave<V>>
+impl<'b, V: View<'b>> Leave<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Leave<'b, V>>
     where
         F: 'static + Fn(&mut Context),
     {
@@ -276,7 +276,7 @@ impl<V: View> Leave<V> {
     }
 }
 
-impl<V: View> View for Leave<V> {
+impl<'b, V: View<'b>> View<'b> for Leave<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -307,15 +307,15 @@ impl<V: View> View for Leave<V> {
 }
 
 // Move
-pub struct Move<V: View> {
+pub struct Move<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context, f32, f32)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Move<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Move<V>>
+impl<'b, V: View<'b>> Move<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Move<'b, V>>
     where
         F: 'static + Fn(&mut Context, f32, f32),
     {
@@ -336,7 +336,7 @@ impl<V: View> Move<V> {
     }
 }
 
-impl<V: View> View for Move<V> {
+impl<'b, V: View<'b>> View<'b> for Move<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -365,15 +365,15 @@ impl<V: View> View for Move<V> {
 }
 
 // Geo
-pub struct Geo<V: View> {
+pub struct Geo<'b, V: View<'b>> {
     view: Box<dyn ViewHandler>,
     action: Option<Box<dyn Fn(&mut Context, GeometryChanged)>>,
 
     p: PhantomData<V>,
 }
 
-impl<V: View> Geo<V> {
-    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Geo<V>>
+impl<'b, V: View<'b>> Geo<'b, V> {
+    pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Geo<'b, V>>
     where
         F: 'static + Fn(&mut Context, GeometryChanged),
     {
@@ -394,7 +394,7 @@ impl<V: View> Geo<V> {
     }
 }
 
-impl<V: View> View for Geo<V> {
+impl<'b, V: View<'b>> View<'b> for Geo<'b, V> {
     fn element(&self) -> Option<String> {
         self.view.element()
     }
@@ -425,81 +425,81 @@ impl<V: View> View for Geo<V> {
 }
 
 pub trait Actions<'a, 'b> {
-    type View: View;
-    fn on_press<F>(self, action: F) -> Handle<'a, 'b, Press<Self::View>>
+    type View: View<'b>;
+    fn on_press<F>(self, action: F) -> Handle<'a, 'b, Press<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context);
 
-    fn on_release<F>(self, action: F) -> Handle<'a, 'b, Release<Self::View>>
+    fn on_release<F>(self, action: F) -> Handle<'a, 'b, Release<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context);
 
-    fn on_hover<F>(self, action: F) -> Handle<'a, 'b, Hover<Self::View>>
+    fn on_hover<F>(self, action: F) -> Handle<'a, 'b, Hover<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context);
 
-    fn on_over<F>(self, action: F) -> Handle<'a, 'b, Over<Self::View>>
+    fn on_over<F>(self, action: F) -> Handle<'a, 'b, Over<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context);
 
-    fn on_leave<F>(self, action: F) -> Handle<'a, 'b, Leave<Self::View>>
+    fn on_leave<F>(self, action: F) -> Handle<'a, 'b, Leave<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context);
 
-    fn on_move<F>(self, action: F) -> Handle<'a, 'b, Move<Self::View>>
+    fn on_move<F>(self, action: F) -> Handle<'a, 'b, Move<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context, f32, f32);
 
-    fn on_geo_changed<F>(self, action: F) -> Handle<'a, 'b, Geo<Self::View>>
+    fn on_geo_changed<F>(self, action: F) -> Handle<'a, 'b, Geo<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context, GeometryChanged);
 }
 
-impl<'a, 'b, V: View> Actions<'a, 'b> for Handle<'a, 'b, V> {
+impl<'a, 'b, V: View<'b>> Actions<'a, 'b> for Handle<'a, 'b, V> {
     type View = V;
-    fn on_press<F>(self, action: F) -> Handle<'a, 'b, Press<Self::View>>
+    fn on_press<F>(self, action: F) -> Handle<'a, 'b, Press<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context),
     {
         Press::new(self, action)
     }
 
-    fn on_release<F>(self, action: F) -> Handle<'a, 'b, Release<Self::View>>
+    fn on_release<F>(self, action: F) -> Handle<'a, 'b, Release<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context),
     {
         Release::new(self, action)
     }
 
-    fn on_hover<F>(self, action: F) -> Handle<'a, 'b, Hover<Self::View>>
+    fn on_hover<F>(self, action: F) -> Handle<'a, 'b, Hover<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context),
     {
         Hover::new(self, action)
     }
 
-    fn on_over<F>(self, action: F) -> Handle<'a, 'b, Over<Self::View>>
+    fn on_over<F>(self, action: F) -> Handle<'a, 'b, Over<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context),
     {
         Over::new(self, action)
     }
 
-    fn on_leave<F>(self, action: F) -> Handle<'a, 'b, Leave<Self::View>>
+    fn on_leave<F>(self, action: F) -> Handle<'a, 'b, Leave<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context),
     {
         Leave::new(self, action)
     }
 
-    fn on_move<F>(self, action: F) -> Handle<'a, 'b, Move<Self::View>>
+    fn on_move<F>(self, action: F) -> Handle<'a, 'b, Move<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context, f32, f32),
     {
         Move::new(self, action)
     }
 
-    fn on_geo_changed<F>(self, action: F) -> Handle<'a, 'b, Geo<Self::View>>
+    fn on_geo_changed<F>(self, action: F) -> Handle<'a, 'b, Geo<'b, Self::View>>
     where
         F: 'static + Fn(&mut Context, GeometryChanged),
     {
