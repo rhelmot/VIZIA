@@ -8,7 +8,7 @@ use crate::{Context, Handle, View};
 pub struct VStack {}
 
 impl VStack {
-    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, content: F) -> Handle<'a, Self>
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, content: F) -> Handle<'a, 'b, Self>
     where
         F: FnOnce(&mut Context),
     {
@@ -28,7 +28,7 @@ impl View for VStack {
 pub struct HStack {}
 
 impl HStack {
-    pub fn new<F>(cx: &mut Context, content: F) -> Handle<Self>
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, content: F) -> Handle<'a, 'b, Self>
     where
         F: 'static + FnOnce(&mut Context),
     {
@@ -50,7 +50,7 @@ impl View for HStack {
 pub struct ZStack {}
 
 impl ZStack {
-    pub fn new<F>(cx: &mut Context, content: F) -> Handle<Self>
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, content: F) -> Handle<'a, 'b, Self>
     where
         F: 'static + FnOnce(&mut Context),
     {
