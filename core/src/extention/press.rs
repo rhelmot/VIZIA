@@ -1,35 +1,26 @@
 use std::marker::PhantomData;
 
-use better_any::{Tid, TidAble};
 use morphorm::GeometryChanged;
 
 use crate::{Context, Entity, Event, Handle, MouseButton, View, ViewHandler, WindowEvent};
 
 // Press
-#[derive(Tid)]
-pub struct Press<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler<'b>>,
-    action: Option<Box<dyn Fn(&mut Context)>>,
+pub struct Press<'b, V> {
+    view: Box<dyn ViewHandler<'b> + 'b>,
+    action: Option<Box<dyn for<'c> Fn(&'c mut Context<'b>) + 'b>>,
 
     p: PhantomData<V>,
 }
 
-impl<'b, V: View<'b>> Press<'b, V> {
+impl<'b, V: View<'b> + 'b> Press<'b, V> {
     pub fn new<'a, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Press<'b, V>>
     where
-        F: 'b + Fn(&mut Context),
+        F: for<'c> Fn(&'c mut Context<'b>) + 'b,
     {
-        if let Some(mut view) = handle.cx.views.remove(&handle.entity) {
-            if view.downcast_ref::<V>().is_some() {
-                let item = Self { view, action: Some(Box::new(action)), p: Default::default() };
+        if let Some(view) = handle.cx.views.remove(&handle.entity) {
+            let item = Self { view, action: Some(Box::new(action)), p: Default::default() };
 
-                handle.cx.views.insert(handle.entity, Box::new(item));
-            } else {
-                if let Some(press) = view.downcast_mut::<Press<V>>() {
-                    press.action = Some(Box::new(action));
-                }
-                handle.cx.views.insert(handle.entity, view);
-            }
+            handle.cx.views.insert(handle.entity, Box::new(item));
         }
 
         Handle { entity: handle.entity, p: Default::default(), cx: handle.cx }
@@ -41,7 +32,7 @@ impl<'b, V: View<'b>> View<'b> for Press<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -63,15 +54,14 @@ impl<'b, V: View<'b>> View<'b> for Press<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }
 
 // Release
-#[derive(Tid)]
 pub struct Release<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler<'b>>,
+    view: Box<dyn ViewHandler<'b> + 'b>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
@@ -104,7 +94,7 @@ impl<'b, V: View<'b>> View<'b> for Release<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -126,13 +116,12 @@ impl<'b, V: View<'b>> View<'b> for Release<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }
 
 // Hover
-#[derive(Tid)]
 pub struct Hover<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -167,7 +156,7 @@ impl<'b, V: View<'b>> View<'b> for Hover<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -187,13 +176,12 @@ impl<'b, V: View<'b>> View<'b> for Hover<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }
 
 // Hover
-#[derive(Tid)]
 pub struct Over<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -228,7 +216,7 @@ impl<'b, V: View<'b>> View<'b> for Over<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -246,13 +234,12 @@ impl<'b, V: View<'b>> View<'b> for Over<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }
 
 // Leave
-#[derive(Tid)]
 pub struct Leave<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -287,7 +274,7 @@ impl<'b, V: View<'b>> View<'b> for Leave<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -307,13 +294,12 @@ impl<'b, V: View<'b>> View<'b> for Leave<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }
 
 // Move
-#[derive(Tid)]
 pub struct Move<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context, f32, f32)>>,
@@ -348,7 +334,7 @@ impl<'b, V: View<'b>> View<'b> for Move<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -366,13 +352,12 @@ impl<'b, V: View<'b>> View<'b> for Move<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }
 
 // Geo
-#[derive(Tid)]
 pub struct Geo<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context, GeometryChanged)>>,
@@ -407,7 +392,7 @@ impl<'b, V: View<'b>> View<'b> for Geo<'b, V> {
         self.view.element()
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         self.view.event(cx, event);
 
         if let Some(window_event) = event.message.downcast() {
@@ -427,7 +412,7 @@ impl<'b, V: View<'b>> View<'b> for Geo<'b, V> {
         }
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut crate::Canvas) {
         self.view.draw(cx, canvas);
     }
 }

@@ -4,7 +4,7 @@ pub struct ForEach {}
 impl ForEach {
     pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, range: std::ops::Range<usize>, mut template: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + FnMut(&'a mut Context<'b>, usize),
+        F: 'static + FnMut(&mut Context<'b>, usize),
     {
         Self {}.build2(cx, move |cx| {
             if cx.current.child_iter(&cx.tree.clone()).count() != range.len() {

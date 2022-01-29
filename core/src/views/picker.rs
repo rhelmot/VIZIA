@@ -7,8 +7,6 @@ use crate::{
 };
 
 pub struct Picker<L>
-where
-    L: Lens,
 {
     lens: PhantomData<L>,
 }
@@ -21,7 +19,7 @@ where
 {
     pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, lens: L, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&'a mut Context<'b>, Field<L>),
+        F: 'static + Fn(&mut Context<'b>, Field<L>),
     {
         Self { lens: PhantomData::default() }
             .build2(cx, move |cx| {
@@ -78,8 +76,8 @@ pub struct Dropdown {}
 impl Dropdown {
     pub fn new<'a, 'b, F, L, Label>(cx: &'a mut Context<'b>, label: L, builder: F) -> Handle<'a, 'b, Self>
     where
-        L: 'static + Fn(&'a mut Context<'b>) -> Handle<'a, 'b, Label>,
-        F: 'static + Fn(&mut Context),
+        L: 'static + Fn(&mut Context<'b>) -> Handle<'a, 'b, Label>,
+        F: 'static + Fn(&mut Context<'b>),
         Label: 'static + View<'b>,
     {
         Self {}

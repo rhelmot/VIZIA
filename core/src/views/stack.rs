@@ -30,7 +30,7 @@ pub struct HStack {}
 impl HStack {
     pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, content: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + FnOnce(&mut Context),
+        F: FnOnce(&mut Context<'b>),
     {
         Self {}
             .build2(cx, |cx| {
@@ -52,7 +52,7 @@ pub struct ZStack {}
 impl ZStack {
     pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, content: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + FnOnce(&mut Context),
+        F: 'static + FnOnce(&mut Context<'b>),
     {
         Self {}.build2(cx, |cx| {
             (content)(cx);

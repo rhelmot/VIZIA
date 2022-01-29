@@ -1,19 +1,18 @@
-use better_any::Tid;
 
 use crate::{Canvas, Context, Event};
 
-use std::any::{Any, TypeId};
 
-pub trait ViewHandler<'b>: Tid<'b> {
+
+pub trait ViewHandler<'b>: 'b {
     fn element(&self) -> Option<String> {
         None
     }
 
-    fn body(&mut self, cx: &mut Context);
+    fn body(&mut self, cx: &mut Context<'b>);
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event);
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event);
 
-    fn draw(&self, cx: &mut Context, canvas: &mut Canvas);
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut Canvas);
 }
 
 impl <'b> dyn ViewHandler<'b> {
@@ -22,14 +21,15 @@ impl <'b> dyn ViewHandler<'b> {
     where
         T: ViewHandler<'b> + 'b
     {
+        todo!()
         // Get TypeId of the type this function is instantiated with
-        let t = TypeId::of::<T>();
+        // let t = TypeId::of::<T>();
 
         // Get TypeId of the type in the trait object
-        let concrete = self.type_id();
+        // let concrete = self.type_id();
 
         // Compare both TypeIds on equality
-        t == concrete
+        // t == concrete
     }
 
     /// Attempt to cast a view handler to a mutable reference to the specified type.

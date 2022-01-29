@@ -1,4 +1,3 @@
-use better_any::{Tid, TidAble};
 use femtovg::{LineCap, Paint, Path, Solidity};
 use morphorm::{Hierarchy, Units};
 
@@ -13,7 +12,6 @@ static DEFAULT_MODIFIER_SCALAR: f32 = 0.04;
 
 use std::f32::consts::PI;
 
-#[derive(Tid)]
 pub struct Knob<'b> {
     pub normalized_value: f32,
     default_normal: f32,
@@ -90,7 +88,7 @@ impl <'b> Knob<'b> {
         content: F,
     ) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&'a mut Context<'b>, f32) -> Handle<'a, 'b, T>,
+        F: 'static + Fn(&mut Context<'b>, f32) -> Handle<'a, 'b, T>,
     {
         Self {
             normalized_value,
@@ -135,7 +133,7 @@ impl<'a, 'b> Handle<'a, 'b, Knob<'b>> {
     }
 }
 
-impl <'b> View<'_> for Knob<'b> {
+impl <'b> View<'b> for Knob<'b> {
     fn element(&self) -> Option<String> {
         Some("knob".to_string())
     }
@@ -241,7 +239,6 @@ impl <'b> View<'_> for Knob<'b> {
     }
 }
 
-#[derive(Tid)]
 pub struct ArcTrack {
     angle_start: f32,
     angle_end: f32,

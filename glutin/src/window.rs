@@ -81,7 +81,7 @@ impl Window {
     }
 }
 
-impl View for Window {
+impl View<'_> for Window {
     fn event(&mut self, _: &mut Context, event: &mut Event) {
         //self.window_widget.on_event(state, entity, event);
         if let Some(window_event) = event.message.downcast() {

@@ -1,7 +1,6 @@
 use std::any::TypeId;
 use std::collections::HashSet;
 
-use better_any::{Tid, TidAble, impl_tid};
 use morphorm::{LayoutType, PositionType};
 
 use crate::{
@@ -10,29 +9,26 @@ use crate::{
 
 use crate::{Data, Lens, Model};
 
-pub struct Binding<L>
+pub struct Binding<'b, L>
 where
     L: Lens,
 {
     lens: L,
     parent: Entity,
     count: usize,
-    builder: Option<Box<dyn Fn(&mut Context, Field<L>)>>,
+    builder: Option<Box<dyn Fn(&mut Context<'b>, Field<L>)>>,
 }
 
-#[impl_tid]
-impl<'b, L: Lens + 'static> TidAble<'b> for Binding<L> {}
-
-impl<L> Binding<L>
+impl<'b, L> Binding<'b, L>
 where
     L: 'static + Lens,
     <L as Lens>::Source: 'static,
     <L as Lens>::Target: Data,
 {
-    pub fn new_fallible<F1, F2>(cx: &mut Context, lens: L, builder_some: F1, builder_none: F2)
+    pub fn new_fallible<F1, F2>(cx: &mut Context<'b>, lens: L, builder_some: F1, builder_none: F2)
     where
-        F1: 'static + Fn(&mut Context, Field<L>),
-        F2: 'static + Fn(&mut Context),
+        F1: 'static + Fn(&mut Context<'b>, Field<L>),
+        F2: 'static + Fn(&mut Context<'b>),
     {
         Self::new(cx, lens, move |cx, field| {
             // TODO: cache somewhere which branch we take and prune the tree if we switch
@@ -44,9 +40,9 @@ where
         })
     }
 
-    pub fn new<F>(cx: &mut Context, lens: L, builder: F)
+    pub fn new<F>(cx: &mut Context<'b>, lens: L, builder: F)
     where
-        F: 'static + Fn(&mut Context, Field<L>),
+        F: 'static + Fn(&mut Context<'b>, Field<L>),
         <L as Lens>::Source: Model,
     {
         let parent = cx.current;
@@ -111,8 +107,8 @@ where
     }
 }
 
-impl<L: 'static + Lens> View<'_> for Binding<L> {
-    fn body<'a>(&mut self, cx: &'a mut Context) {
+impl<'b, L: Lens> View<'b> for Binding<'b, L> {
+    fn body<'a>(&mut self, cx: &'a mut Context<'b>) {
         if let Some(builder) = self.builder.take() {
             //let prev = cx.current;
             //let count = cx.count;

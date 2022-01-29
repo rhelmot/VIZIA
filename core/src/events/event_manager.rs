@@ -1,4 +1,4 @@
-use crate::{Context, Entity, Event, Propagation, Tree, TreeExt};
+use crate::{Context, Event, Propagation, Tree, TreeExt};
 
 /// Dispatches events to views.
 ///
@@ -19,7 +19,7 @@ impl EventManager {
         EventManager { event_queue: Vec::new(), tree: Tree::new() }
     }
 
-    pub fn flush_events(&mut self, context: &mut Context) {
+    pub fn flush_events<'a, 'b>(&mut self, context: &'a mut Context<'b>) {
         // Clear the event queue in the event manager
         self.event_queue.clear();
 
@@ -39,26 +39,22 @@ impl EventManager {
             }
 
             // Send events to any listeners
-            let listeners =
-                context.listeners.iter().map(|(entity, _)| *entity).collect::<Vec<Entity>>();
-            for entity in listeners {
-                if let Some(listener) = context.listeners.remove(&entity) {
-                    if let Some(mut event_handler) = context.views.remove(&entity) {
-                        let prev = context.current;
-                        context.current = entity;
-                        (listener)(event_handler.as_mut(), context, event);
-                        context.current = prev;
+            // let listeners =
+            //     context.listeners.iter().map(|(entity, _)| *entity).collect::<Vec<Entity>>();
+            // for entity in listeners {
+            //     if let Some(listener) = context.listeners.get_mut(&entity) {
+            //         if let Some(mut event_handler) = context.views.get_mut(&entity) {
+            //             let prev = context.current;
+            //             context.current = entity;
+            //             (listener)(event_handler.as_mut(), context, event);
+            //             context.current = prev;
+            //         }
+            //     }
 
-                        context.views.insert(entity, event_handler);
-                    }
-
-                    context.listeners.insert(entity, listener);
-                }
-
-                if event.consumed {
-                    continue 'events;
-                }
-            }
+            //     if event.consumed {
+            //         continue 'events;
+            //     }
+            // }
 
             // Define the target to prevent multiple mutable borrows error
             let target = event.target;

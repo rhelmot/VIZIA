@@ -6,20 +6,19 @@ use crate::Units::*;
 use crate::{Context, HStack, Handle, ItemPtr, Lens, Model, TreeExt, View};
 
 // TODO
-
-pub struct Table<L, T: 'static>
+pub struct Table<'b, L, T: 'static>
 where
     L: Lens<Target = Vec<T>>,
 {
     width: usize,
     lens: L,
-    builder: Option<Rc<dyn Fn(&mut Context, usize, ItemPtr<L, T>)>>,
+    builder: Option<Rc<dyn Fn(&mut Context<'b>, usize, ItemPtr<L, T>)>>,
 }
 
-impl<L: Lens<Target = Vec<T>>, T> Table<L, T> {
-    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, width: usize, lens: L, builder: F) -> Handle<'a, 'b, Self>
+impl<'b, L: Lens<Target = Vec<T>>, T> Table<'b, L, T> {
+    pub fn new<'a, F>(cx: &'a mut Context<'b>, width: usize, lens: L, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&'a mut Context<'b>, usize, ItemPtr<L, T>),
+        F: 'static + Fn(&mut Context<'b>, usize, ItemPtr<L, T>),
         <L as Lens>::Source: Model,
     {
         Self { lens, width, builder: Some(Rc::new(builder)) }
@@ -30,11 +29,11 @@ impl<L: Lens<Target = Vec<T>>, T> Table<L, T> {
     }
 }
 
-impl<L, T> View<'_> for Table<L, T>
+impl<'b, L, T> View<'b> for Table<'b, L, T>
 where
     L: 'static + Lens<Target = Vec<T>>,
 {
-    fn body(&mut self, cx: &mut Context) {
+    fn body(&mut self, cx: &mut Context<'b>) {
         for child in cx.current.child_iter(&cx.tree.clone()) {
             cx.remove(child);
         }

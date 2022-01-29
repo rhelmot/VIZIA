@@ -9,7 +9,7 @@ use femtovg::TextContext;
 use crate::{
     storage::sparse_set::SparseSet, CachedData, Entity, Enviroment, Event, FontOrId, IdManager,
     Message, ModelDataStore, Modifiers, MouseState, Propagation, ResourceManager, Style, Tree,
-    TreeExt, View, ViewHandler,
+    TreeExt, ViewHandler,
 };
 
 static DEFAULT_THEME: &str = include_str!("default_theme.css");
@@ -19,10 +19,10 @@ pub struct Context<'b> {
     pub tree: Tree,
     pub current: Entity,
     pub count: usize,
-    pub views: HashMap<Entity, Box<dyn ViewHandler<'b>>>,
+    pub views: HashMap<Entity, Box<dyn ViewHandler<'b> + 'b>>,
     pub data: SparseSet<ModelDataStore>,
     pub event_queue: VecDeque<Event>,
-    pub listeners: HashMap<Entity, Box<dyn Fn(&mut dyn ViewHandler, &mut Context, &mut Event) + 'b>>,
+    // pub listeners: HashMap<Entity, Box<dyn Fn(&mut dyn ViewHandler, &mut Context<'b>, &mut Event) + 'b>>,
     pub style: Style,
     pub cache: CachedData,
 
@@ -59,7 +59,7 @@ impl <'b> Context<'b> {
             cache,
             enviroment: Enviroment::new(),
             event_queue: VecDeque::new(),
-            listeners: HashMap::default(),
+            // listeners: HashMap::default(),
             mouse: MouseState::default(),
             modifiers: Modifiers::empty(),
             captured: Entity::null(),
@@ -144,20 +144,20 @@ impl <'b> Context<'b> {
         );
     }
 
-    pub fn add_listener<F, W>(&mut self, listener: F)
-    where
-        W: View<'b>,
-        F: 'static + Fn(&mut W, &mut Context, &mut Event),
-    {
-        self.listeners.insert(
-            self.current,
-            Box::new(move |event_handler, context, event| {
-                if let Some(widget) = event_handler.downcast_mut::<W>() {
-                    (listener)(widget, context, event);
-                }
-            }),
-        );
-    }
+    // pub fn add_listener<F, W>(&mut self, listener: F)
+    // where
+    //     W: View<'b>,
+    //     F: 'static + Fn(&mut W, &mut Context, &mut Event),
+    // {
+    //     self.listeners.insert(
+    //         self.current,
+    //         Box::new(move |event_handler, context, event| {
+    //             if let Some(widget) = event_handler.downcast_mut::<W>() {
+    //                 (listener)(widget, context, event);
+    //             }
+    //         }),
+    //     );
+    // }
 
     pub fn emit_trace<M: Message>(&mut self, message: M) {
         self.event_queue.push_back(

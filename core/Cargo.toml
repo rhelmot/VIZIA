@@ -12,7 +12,6 @@ meadowlark = ["rusty-daw-core"]
 clipboard = ["copypasta"]
 
 [dependencies]
-better_any = "0.1.1"
 vizia_derive = {version = "0.1.0", path = "../derive"}
 femtovg = {git = "https://github.com/rhelmot/femtovg", rev = "4caba90e08e8eacf66dce2125393334a9cee22d1", default-features = false}
 morphorm = {git = "https://github.com/geom3trik/morphorm", features = ["rounding"]}

@@ -3,7 +3,6 @@ use crate::{
     Context, Event, FontOrId, Handle, ViewHandler,
 };
 
-use better_any::TidAble;
 use femtovg::{
     renderer::OpenGl, Align, Baseline, ImageFlags, Paint, Path, PixelFormat, RenderTarget,
 };
@@ -14,12 +13,12 @@ pub type Canvas = femtovg::Canvas<OpenGl>;
 // Length proportional to radius of a cubic bezier handle for 90deg arcs.
 const KAPPA90: f32 = 0.5522847493;
 
-pub trait View<'b>: Sized + TidAble<'b> {
+pub trait View<'b>: Sized + 'b {
     #[allow(unused_variables)]
-    fn body(&mut self, cx: &mut Context) {}
+    fn body(&mut self, cx: &mut Context<'b>) {}
     fn build2<'a, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: FnOnce(&mut Context),
+        F: FnOnce(&mut Context<'b>),
     {
         // Add the instance to context unless it already exists
         let id = if let Some(id) = cx.tree.get_child(cx.current, cx.count) {
@@ -127,9 +126,9 @@ pub trait View<'b>: Sized + TidAble<'b> {
     }
 
     #[allow(unused_variables)]
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {}
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {}
 
-    fn draw(&self, cx: &mut Context, canvas: &mut Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut Canvas) {
         //println!("{}", debug(&mut context, entity));
         let entity = cx.current;
 
@@ -733,21 +732,21 @@ pub trait View<'b>: Sized + TidAble<'b> {
 
 impl<'b, T> ViewHandler<'b> for T
 where
-    T: TidAble<'b> + std::marker::Sized + View<'b> + 'static,
+    T: std::marker::Sized + View<'b>,
 {
     fn element(&self) -> Option<String> {
         <T as View>::element(&self)
     }
 
-    fn body(&mut self, cx: &mut Context) {
+    fn body(&mut self, cx: &mut Context<'b>) {
         <T as View>::body(self, cx);
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut Event) {
         <T as View>::event(self, cx, event);
     }
 
-    fn draw(&self, cx: &mut Context, canvas: &mut Canvas) {
+    fn draw(&self, cx: &mut Context<'b>, canvas: &mut Canvas) {
         <T as View>::draw(self, cx, canvas);
     }
 }

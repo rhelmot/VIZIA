@@ -1,8 +1,7 @@
 use morphorm::PositionType;
 
 use crate::{
-    style::PropGet, Binding, Code, Context, Data, Handle, Lens, Model, PropSet, View, Visibility,
-    WindowEvent,
+    Binding, Context, Data, Handle, Lens, Model, PropSet, View, Visibility,
 };
 
 #[derive(Debug, Default, Data, Lens, Clone)]
@@ -45,7 +44,7 @@ pub struct Popup {}
 impl Popup {
     pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&mut Context),
+        F: 'static + Fn(&mut Context<'b>),
     {
         Self {}
             .build2(cx, |cx| {
@@ -60,34 +59,34 @@ impl Popup {
                     (builder)(cx);
                 });
 
-                cx.add_listener(|_: &mut Self, cx, event| {
-                    if let Some(popup_data) = cx.data::<PopupData>() {
-                        if let Some(window_event) = event.message.downcast() {
-                            match window_event {
-                                WindowEvent::MouseDown(_) => {
-                                    if popup_data.is_open {
-                                        if event.origin != cx.current {
-                                            if !cx.current.is_over(cx) {
-                                                cx.emit(PopupEvent::Close);
-                                                event.consume();
-                                            }
-                                        }
-                                    }
-                                }
+                // cx.add_listener(|_: &mut Self, cx, event| {
+                //     if let Some(popup_data) = cx.data::<PopupData>() {
+                //         if let Some(window_event) = event.message.downcast() {
+                //             match window_event {
+                //                 WindowEvent::MouseDown(_) => {
+                //                     if popup_data.is_open {
+                //                         if event.origin != cx.current {
+                //                             if !cx.current.is_over(cx) {
+                //                                 cx.emit(PopupEvent::Close);
+                //                                 event.consume();
+                //                             }
+                //                         }
+                //                     }
+                //                 }
 
-                                WindowEvent::KeyDown(code, _) => {
-                                    if popup_data.is_open {
-                                        if *code == Code::Escape {
-                                            cx.emit(PopupEvent::Close);
-                                        }
-                                    }
-                                }
+                //                 WindowEvent::KeyDown(ref code, _) => {
+                //                     if popup_data.is_open {
+                //                         if *code == Code::Escape {
+                //                             cx.emit(PopupEvent::Close);
+                //                         }
+                //                     }
+                //                 }
 
-                                _ => {}
-                            }
-                        }
-                    }
-                });
+                //                 _ => {}
+                //             }
+                //         }
+                //     }
+                // });
             })
             .position_type(PositionType::SelfDirected)
             .z_order(100)

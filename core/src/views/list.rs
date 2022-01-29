@@ -102,7 +102,7 @@ impl<L: 'static + Lens<Target = Vec<T>>, T: Data> List<L, T> {
     /// Creates a new ListView with a binding to the given lens and a template for constructing the list items
     pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, lens: L, item: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&'a mut Context<'b>, ItemPtr<L, T>),
+        F: 'static + Fn(&mut Context<'b>, ItemPtr<L, T>),
         <L as Lens>::Source: Model,
     {
         //let item_template = Rc::new(item);

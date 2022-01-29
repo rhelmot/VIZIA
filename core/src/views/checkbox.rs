@@ -1,3 +1,4 @@
+
 use crate::{Context, Handle, MouseButton, Units::*, View, WindowEvent};
 
 const ICON_CHECK: &str = "\u{2713}";
@@ -32,13 +33,13 @@ const ICON_CHECK: &str = "\u{2713}";
 /// })
 /// ```
 ///
-pub struct Checkbox {
-    on_toggle: Option<Box<dyn Fn(&mut Context)>>,
+pub struct Checkbox<'b> {
+    on_toggle: Option<Box<dyn Fn(&mut Context<'b>) + 'b>>,
 }
 
-impl Checkbox {
-    pub fn new<'a, 'b>(cx: &'a mut Context<'b>, checked: bool) -> Handle<'a, 'b, Self> {
-        Self { on_toggle: None }
+impl<'b> Checkbox<'b> {
+    pub fn new<'a>(cx: &'a mut Context<'b>, checked: bool) -> Handle<'a, 'b, Self> {
+        Self { on_toggle: Option::<Box<dyn Fn(&mut Context<'b>) + 'b>>::None }
             .build2(cx, |_| {})
             .width(Pixels(20.0))
             .height(Pixels(20.0))
@@ -47,7 +48,7 @@ impl Checkbox {
     }
 }
 
-impl<'a, 'b> Handle<'a, 'b, Checkbox> {
+impl<'a, 'b> Handle<'a, 'b, Checkbox<'b>> {
     /// Set the callback triggered when the checkbox is pressed.
     ///
     /// # Example
@@ -60,10 +61,10 @@ impl<'a, 'b> Handle<'a, 'b, Checkbox> {
     /// ```
     pub fn on_toggle<F>(self, callback: F) -> Self
     where
-        F: 'b + Fn(&mut Context),
+        F: 'b + Fn(&mut Context<'b>),
     {
         if let Some(view) = self.cx.views.get_mut(&self.entity) {
-            if let Some(checkbox) = view.downcast_mut::<Checkbox>() {
+            if let Some(checkbox) = view.downcast_mut::<Checkbox<'b>>() {
                 checkbox.on_toggle = Some(Box::new(callback));
             }
         }
@@ -72,12 +73,12 @@ impl<'a, 'b> Handle<'a, 'b, Checkbox> {
     }
 }
 
-impl View<'_> for Checkbox {
+impl<'b> View<'b> for Checkbox<'b> {
     fn element(&self) -> Option<String> {
         Some("checkbox".to_string())
     }
 
-    fn event(&mut self, cx: &mut Context, event: &mut crate::Event) {
+    fn event(&mut self, cx: &mut Context<'b>, event: &mut crate::Event) {
         if let Some(window_event) = event.message.downcast() {
             match window_event {
                 WindowEvent::MouseDown(button) if *button == MouseButton::Left => {

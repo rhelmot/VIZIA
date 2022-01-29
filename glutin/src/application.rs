@@ -10,19 +10,19 @@ use crate::window::Window;
 
 static DEFAULT_THEME: &str = include_str!("../../core/src/default_theme.css");
 
-pub struct Application {
-    context: Context,
+pub struct Application<'b> {
+    context: Context<'b>,
     event_loop: EventLoop<Event>,
-    builder: Option<Box<dyn Fn(&mut Context)>>,
-    on_idle: Option<Box<dyn Fn(&mut Context)>>,
+    builder: Box<dyn Fn(&mut Context<'b>) + 'static>,
+    on_idle: Option<Box<dyn Fn(&mut Context<'b>) + 'static>>,
     window_description: WindowDescription,
     should_poll: bool,
 }
 
-impl Application {
+impl<'b> Application<'b> {
     pub fn new<F>(window_description: WindowDescription, builder: F) -> Self
     where
-        F: 'static + Fn(&mut Context),
+        F: 'static + Fn(&mut Context<'b>),
     {
         let mut context = Context::new();
 
@@ -33,7 +33,7 @@ impl Application {
         Self {
             context,
             event_loop: EventLoop::with_user_event(),
-            builder: Some(Box::new(builder)),
+            builder: Box::new(builder),
             on_idle: None,
             window_description,
             should_poll: false,
@@ -186,7 +186,7 @@ impl Application {
         //     self.builder = Some(builder);
         // }
 
-        let builder = self.builder.take();
+        let builder: Box<dyn Fn(&mut Context<'b>)> = self.builder;
 
         let on_idle = self.on_idle.take();
 
@@ -219,9 +219,7 @@ impl Application {
                     if context.enviroment.needs_rebuild {
                         context.current = Entity::root();
                         context.count = 0;
-                        if let Some(builder) = &builder {
-                            (builder)(&mut context);
-                        }
+                        (builder)(&mut context);
                         context.enviroment.needs_rebuild = false;
                     }
 
@@ -733,7 +731,7 @@ impl Application {
     }
 }
 
-impl Env for Application {
+impl Env for Application<'_> {
     fn ignore_default_styles(mut self) -> Self {
         if self.context.enviroment.include_default_theme {
             self.context.enviroment.include_default_theme = false;
