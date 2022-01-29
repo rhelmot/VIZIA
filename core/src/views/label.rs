@@ -8,7 +8,7 @@ impl Label {
     }
 }
 
-impl View for Label {
+impl View<'_> for Label {
     fn element(&self) -> Option<String> {
         Some("label".to_string())
     }
