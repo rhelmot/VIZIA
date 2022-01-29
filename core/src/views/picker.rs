@@ -19,9 +19,9 @@ where
     <L as Lens>::Source: 'static,
     <L as Lens>::Target: Data,
 {
-    pub fn new<F>(cx: &mut Context, lens: L, builder: F) -> Handle<Self>
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, lens: L, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&mut Context, Field<L>),
+        F: 'static + Fn(&'a mut Context<'b>, Field<L>),
     {
         Self { lens: PhantomData::default() }
             .build2(cx, move |cx| {
@@ -47,12 +47,12 @@ pub enum PickerEvent<T: std::fmt::Debug> {
 pub struct PickerItem {}
 
 impl PickerItem {
-    pub fn new<'a, T: 'static + std::fmt::Debug + Clone + PartialEq + Send>(
-        cx: &'a mut Context,
+    pub fn new<'a, 'b, T: 'static + std::fmt::Debug + Clone + PartialEq + Send>(
+        cx: &'a mut Context<'b>,
         text: &'static str,
         option: T,
         value: T,
-    ) -> Handle<'a, Self> {
+    ) -> Handle<'a, 'b, Self> {
         Self {}
             .build2(cx, move |cx| {
                 let opt = option.clone();
@@ -76,9 +76,9 @@ impl View for PickerItem {}
 pub struct Dropdown {}
 
 impl Dropdown {
-    pub fn new<F, L, Label>(cx: &mut Context, label: L, builder: F) -> Handle<Self>
+    pub fn new<'a, 'b, F, L, Label>(cx: &'a mut Context<'b>, label: L, builder: F) -> Handle<'a, 'b, Self>
     where
-        L: 'static + Fn(&mut Context) -> Handle<Label>,
+        L: 'static + Fn(&'a mut Context<'b>) -> Handle<'a, 'b, Label>,
         F: 'static + Fn(&mut Context),
         Label: 'static + View,
     {
