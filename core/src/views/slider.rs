@@ -103,7 +103,7 @@ pub struct Slider {
 }
 
 impl Slider {
-    pub fn new(cx: &mut Context, init: f32, orientation: Orientation) -> Handle<Self> {
+    pub fn new<'a, 'b>(cx: &'a mut Context<'b>, init: f32, orientation: Orientation) -> Handle<'a, 'b, Self> {
         Self { is_dragging: false, on_change: None, on_changing: None, on_min: None, on_max: None }
             .build2(cx, move |cx| {
                 // Create some slider data
@@ -277,7 +277,7 @@ impl View for Slider {
     }
 }
 
-impl<'a> Handle<'a, Slider> {
+impl<'a> Handle<'_, '_, Slider> {
     /// Set the callback triggered when the slider value has changed.
     ///
     /// Takes a closure which provides the current value and returns an event to be sent when the slider
