@@ -14,7 +14,7 @@ pub type Canvas = femtovg::Canvas<OpenGl>;
 // Length proportional to radius of a cubic bezier handle for 90deg arcs.
 const KAPPA90: f32 = 0.5522847493;
 
-pub trait View<'b>: Sized {
+pub trait View<'b>: Sized + TidAble<'b> {
     #[allow(unused_variables)]
     fn body(&mut self, cx: &mut Context) {}
     fn build2<'a, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>

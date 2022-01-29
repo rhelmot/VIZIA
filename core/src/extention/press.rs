@@ -1,10 +1,12 @@
 use std::marker::PhantomData;
 
+use better_any::{Tid, TidAble};
 use morphorm::GeometryChanged;
 
 use crate::{Context, Entity, Event, Handle, MouseButton, View, ViewHandler, WindowEvent};
 
 // Press
+#[derive(Tid)]
 pub struct Press<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -67,6 +69,7 @@ impl<'b, V: View<'b>> View<'b> for Press<'b, V> {
 }
 
 // Release
+#[derive(Tid)]
 pub struct Release<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -129,6 +132,7 @@ impl<'b, V: View<'b>> View<'b> for Release<'b, V> {
 }
 
 // Hover
+#[derive(Tid)]
 pub struct Hover<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -189,6 +193,7 @@ impl<'b, V: View<'b>> View<'b> for Hover<'b, V> {
 }
 
 // Hover
+#[derive(Tid)]
 pub struct Over<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -247,6 +252,7 @@ impl<'b, V: View<'b>> View<'b> for Over<'b, V> {
 }
 
 // Leave
+#[derive(Tid)]
 pub struct Leave<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
@@ -307,6 +313,7 @@ impl<'b, V: View<'b>> View<'b> for Leave<'b, V> {
 }
 
 // Move
+#[derive(Tid)]
 pub struct Move<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context, f32, f32)>>,
@@ -365,6 +372,7 @@ impl<'b, V: View<'b>> View<'b> for Move<'b, V> {
 }
 
 // Geo
+#[derive(Tid)]
 pub struct Geo<'b, V: View<'b>> {
     view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context, GeometryChanged)>>,
