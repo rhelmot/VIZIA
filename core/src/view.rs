@@ -16,7 +16,7 @@ const KAPPA90: f32 = 0.5522847493;
 pub trait View: 'static + Sized {
     #[allow(unused_variables)]
     fn body(&mut self, cx: &mut Context) {}
-    fn build2<F>(self, cx: &mut Context, builder: F) -> Handle<Self>
+    fn build2<'a, 'b, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
         F: 'static + FnOnce(&mut Context),
     {
@@ -51,7 +51,7 @@ pub trait View: 'static + Sized {
         handle
     }
 
-    fn update<F>(self, cx: &mut Context, builder: F) -> Handle<Self>
+    fn update<'a, 'b, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
         F: 'static + FnOnce(&mut Context),
     {
@@ -87,7 +87,7 @@ pub trait View: 'static + Sized {
         handle
     }
 
-    fn build(mut self, cx: &mut Context) -> Handle<Self> {
+    fn build<'a, 'b>(mut self, cx: &'a mut Context<'b>) -> Handle<'a, 'b, Self> {
         let id = if let Some(id) = cx.tree.get_child(cx.current, cx.count) {
             let prev = cx.current;
             cx.current = id;
