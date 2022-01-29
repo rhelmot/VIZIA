@@ -251,7 +251,7 @@ where
     L: Lens<Target = T>,
     T: Data + EditableText + 'static,
 {
-    pub fn new<'a>(cx: &'a mut Context, lens: L) -> Handle<'a, Self>
+    pub fn new<'a, 'b>(cx: &'a mut Context<'b>, lens: L) -> Handle<'a, 'b, Self>
     where
         <L as Lens>::Source: Model,
     {
@@ -789,7 +789,7 @@ where
     }
 }
 
-impl<'a, L, T> Handle<'a, Textbox<L, T>>
+impl<L, T> Handle<'_, '_, Textbox<L, T>>
 where
     L: Lens<Target = T>,
     T: Data + EditableText + 'static,
