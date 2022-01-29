@@ -100,9 +100,9 @@ where
 
 impl<L: 'static + Lens<Target = Vec<T>>, T: Data> List<L, T> {
     /// Creates a new ListView with a binding to the given lens and a template for constructing the list items
-    pub fn new<F>(cx: &mut Context, lens: L, item: F) -> Handle<Self>
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, lens: L, item: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&mut Context, ItemPtr<L, T>),
+        F: 'static + Fn(&'a mut Context<'b>, ItemPtr<L, T>),
         <L as Lens>::Source: Model,
     {
         //let item_template = Rc::new(item);
@@ -185,7 +185,7 @@ impl<L: 'static + Lens<Target = Vec<T>>, T: Data> View for List<L, T> {
     }
 }
 
-impl<L: Lens<Target = Vec<T>>, T: Data> Handle<'_, List<L, T>> {
+impl<L: Lens<Target = Vec<T>>, T: Data> Handle<'_, '_, List<L, T>> {
     pub fn on_increment<F>(self, callback: F) -> Self
     where
         F: 'static + Fn(&mut Context),
