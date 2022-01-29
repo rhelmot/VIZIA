@@ -7,7 +7,7 @@ pub struct RadioButton {
 }
 
 impl RadioButton {
-    pub fn new(cx: &mut Context, checked: bool) -> Handle<Self> {
+    pub fn new<'a, 'b>(cx: &'a mut Context<'b>, checked: bool) -> Handle<'a, 'b, Self> {
         Self { on_select: None }.build2(cx, |_| {}).checked(checked)
     }
 }
@@ -67,7 +67,7 @@ impl View for RadioButton {
     }
 }
 
-impl Handle<'_, RadioButton> {
+impl Handle<'_, '_, RadioButton> {
     pub fn on_select<F>(self, callback: F) -> Self
     where
         F: 'static + Fn(&mut Context),
