@@ -21,13 +21,13 @@ macro_rules! set_style {
     };
 }
 
-pub struct Handle<'a, T> {
+pub struct Handle<'a, 'b, T> {
     pub entity: Entity,
     pub p: PhantomData<T>,
-    pub cx: &'a mut Context,
+    pub cx: &'a mut Context<'b>,
 }
 
-impl<'a, T> Handle<'a, T> {
+impl<'a, 'b, T> Handle<'a, 'b, T> {
     pub fn entity(&self) -> Entity {
         self.entity
     }

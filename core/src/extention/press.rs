@@ -13,9 +13,9 @@ pub struct Press<V: View> {
 }
 
 impl<V: View> Press<V> {
-    pub fn new<'a, F>(handle: Handle<'a, V>, action: F) -> Handle<'a, Press<V>>
+    pub fn new<'a, 'b, F>(handle: Handle<'a, 'b, V>, action: F) -> Handle<'a, 'b, Press<V>>
     where
-        F: 'static + Fn(&mut Context),
+        F: 'b + Fn(&mut Context),
     {
         if let Some(mut view) = handle.cx.views.remove(&handle.entity) {
             if view.downcast_ref::<V>().is_some() {
