@@ -13,7 +13,7 @@ impl <'b> Button<'b> {
     pub fn new<'a, A, L, Label>(cx: &'a mut Context<'b>, action: A, label: L) -> Handle<'a, 'b, Self>
     where
         A: 'b + Fn(&mut Context<'b>),
-        L: for<'c> Fn(&'c mut Context<'b>) -> Handle<'c, 'b, Label>,
+        L: for<'c> Fn(&'c mut Context<'b>) -> Handle<'c, 'b, Label> + 'b,
         Label: View<'b>,
     {
         Self { action: Some(Box::new(action)) }.build2(cx, move |cx| {
