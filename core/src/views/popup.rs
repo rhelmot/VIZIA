@@ -43,7 +43,7 @@ pub enum PopupEvent {
 pub struct Popup {}
 
 impl Popup {
-    pub fn new<F>(cx: &mut Context, builder: F) -> Handle<Self>
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
         F: 'static + Fn(&mut Context),
     {
