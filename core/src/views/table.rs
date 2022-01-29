@@ -30,7 +30,7 @@ impl<L: Lens<Target = Vec<T>>, T> Table<L, T> {
     }
 }
 
-impl<L, T> View for Table<L, T>
+impl<L, T> View<'_> for Table<L, T>
 where
     L: 'static + Lens<Target = Vec<T>>,
 {
