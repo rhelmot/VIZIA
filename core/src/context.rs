@@ -14,7 +14,7 @@ use crate::{
 
 static DEFAULT_THEME: &str = include_str!("default_theme.css");
 
-pub struct Context<'a> {
+pub struct Context<'b> {
     pub entity_manager: IdManager<Entity>,
     pub tree: Tree,
     pub current: Entity,
@@ -22,7 +22,7 @@ pub struct Context<'a> {
     pub views: HashMap<Entity, Box<dyn ViewHandler>>,
     pub data: SparseSet<ModelDataStore>,
     pub event_queue: VecDeque<Event>,
-    pub listeners: HashMap<Entity, Box<dyn Fn(&mut dyn ViewHandler, &mut Context, &mut Event) + 'a>>,
+    pub listeners: HashMap<Entity, Box<dyn Fn(&mut dyn ViewHandler, &mut Context, &mut Event) + 'b>>,
     pub style: Style,
     pub cache: CachedData,
 
@@ -43,7 +43,7 @@ pub struct Context<'a> {
     pub clipboard: ClipboardContext,
 }
 
-impl Context<'_> {
+impl <'b> Context<'b> {
     pub fn new() -> Self {
         let mut cache = CachedData::default();
         cache.add(Entity::root()).expect("Failed to add entity to cache");
@@ -146,7 +146,7 @@ impl Context<'_> {
 
     pub fn add_listener<F, W>(&mut self, listener: F)
     where
-        W: View,
+        W: View<'b>,
         F: 'static + Fn(&mut W, &mut Context, &mut Event),
     {
         self.listeners.insert(
