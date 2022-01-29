@@ -13,7 +13,7 @@ impl Button {
     where
         A: 'b + Fn(&'a mut Context<'b>),
         L: Fn(&'a mut Context<'b>) -> Handle<'a, 'b, Label>,
-        Label: View,
+        Label: View<'b>,
     {
         Self { action: Some(Box::new(action)) }.build2(cx, move |cx| {
             (label)(cx);
@@ -21,7 +21,7 @@ impl Button {
     }
 }
 
-impl View for Button {
+impl View<'_> for Button {
     fn element(&self) -> Option<String> {
         Some("button".to_string())
     }
