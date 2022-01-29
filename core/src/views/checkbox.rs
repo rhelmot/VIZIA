@@ -37,7 +37,7 @@ pub struct Checkbox {
 }
 
 impl Checkbox {
-    pub fn new(cx: &mut Context, checked: bool) -> Handle<Self> {
+    pub fn new<'a, 'b>(cx: &'a mut Context<'b>, checked: bool) -> Handle<'a, 'b, Self> {
         Self { on_toggle: None }
             .build2(cx, |_| {})
             .width(Pixels(20.0))
@@ -47,7 +47,7 @@ impl Checkbox {
     }
 }
 
-impl<'a> Handle<'a, Checkbox> {
+impl<'a, 'b> Handle<'a, 'b, Checkbox> {
     /// Set the callback triggered when the checkbox is pressed.
     ///
     /// # Example
@@ -60,7 +60,7 @@ impl<'a> Handle<'a, Checkbox> {
     /// ```
     pub fn on_toggle<F>(self, callback: F) -> Self
     where
-        F: 'static + Fn(&mut Context),
+        F: 'b + Fn(&mut Context),
     {
         if let Some(view) = self.cx.views.get_mut(&self.entity) {
             if let Some(checkbox) = view.downcast_mut::<Checkbox>() {
