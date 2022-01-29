@@ -11,8 +11,8 @@ pub struct Button {
 impl Button {
     pub fn new<'a, 'b, A, L, Label>(cx: &'a mut Context<'b>, action: A, label: L) -> Handle<'a, 'b, Self>
     where
-        A: 'b + Fn(&mut Context),
-        L: Fn(&mut Context) -> Handle<'a, 'b, Label>,
+        A: 'b + Fn(&'a mut Context<'b>),
+        L: Fn(&'a mut Context<'b>) -> Handle<'a, 'b, Label>,
         Label: View,
     {
         Self { action: Some(Box::new(action)) }.build2(cx, move |cx| {
