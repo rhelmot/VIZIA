@@ -3,7 +3,7 @@ use crate::{Context, Handle, LocalizedStringKey, View};
 pub struct Label;
 
 impl Label {
-    pub fn new<'a>(cx: &mut Context, text: impl LocalizedStringKey<'a>) -> Handle<Self> {
+    pub fn new<'a, 'b, 'c>(cx: &'a mut Context<'b>, text: impl LocalizedStringKey<'c>) -> Handle<'a, 'b, Self> {
         Self {}.build2(cx, |_| {}).text(text.key())
     }
 }
