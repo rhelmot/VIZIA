@@ -140,7 +140,7 @@ impl<L: 'static + Lens<Target = Vec<T>>, T: Data> List<L, T> {
     }
 }
 
-impl<L: 'static + Lens<Target = Vec<T>>, T: Data> View for List<L, T> {
+impl<L: 'static + Lens<Target = Vec<T>>, T: Data> View<'_> for List<L, T> {
     fn element(&self) -> Option<String> {
         Some("list".to_string())
     }
