@@ -12,7 +12,7 @@ static DEFAULT_MODIFIER_SCALAR: f32 = 0.04;
 
 use std::f32::consts::PI;
 
-pub struct Knob {
+pub struct Knob<'b> {
     pub normalized_value: f32,
     default_normal: f32,
 
@@ -24,16 +24,16 @@ pub struct Knob {
     wheel_scalar: f32,
     modifier_scalar: f32,
 
-    on_changing: Option<Box<dyn Fn(&mut Self, &mut Context)>>,
+    on_changing: Option<Box<dyn Fn(&mut Self, &mut Context) + 'b>>,
 }
 
-impl Knob {
-    pub fn new(
-        cx: &mut Context,
+impl <'b> Knob<'b> {
+    pub fn new<'a>(
+        cx: &'a mut Context<'b>,
         normalized_default: f32,
         normalized_value: f32,
         centered: bool,
-    ) -> Handle<Self> {
+    ) -> Handle<'a, 'b, Self> {
         Self {
             normalized_value,
             default_normal: normalized_default,
@@ -82,13 +82,13 @@ impl Knob {
         })
     }
     pub fn custom<'a, F, T>(
-        cx: &'a mut Context,
+        cx: &'a mut Context<'b>,
         normalized_default: f32,
         normalized_value: f32,
         content: F,
-    ) -> Handle<Self>
+    ) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&mut Context, f32) -> Handle<T>,
+        F: 'static + Fn(&'a mut Context<'b>, f32) -> Handle<'a, 'b, T>,
     {
         Self {
             normalized_value,
@@ -118,7 +118,7 @@ impl Knob {
     }
 }
 
-impl<'a> Handle<'a, Knob> {
+impl<'a, 'b> Handle<'a, 'b, Knob<'b>> {
     pub fn on_changing<F>(self, callback: F) -> Self
     where
         F: 'static + Fn(&mut Knob, &mut Context),
@@ -133,7 +133,7 @@ impl<'a> Handle<'a, Knob> {
     }
 }
 
-impl View for Knob {
+impl <'b> View for Knob<'b> {
     fn element(&self) -> Option<String> {
         Some("knob".to_string())
     }
@@ -250,14 +250,14 @@ pub struct ArcTrack {
 }
 
 impl ArcTrack {
-    pub fn new(
-        cx: &mut Context,
+    pub fn new<'a, 'b>(
+        cx: &'a mut Context<'b>,
         value: f32,
         center: bool,
         radius: Units,
         span: Units,
         arc_len: f32,
-    ) -> Handle<Self> {
+    ) -> Handle<'a, 'b, Self> {
         Self {
             // angle_start: -150.0,
             // angle_end: 150.0,
