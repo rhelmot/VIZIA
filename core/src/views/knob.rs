@@ -133,7 +133,7 @@ impl<'a, 'b> Handle<'a, 'b, Knob<'b>> {
     }
 }
 
-impl <'b> View for Knob<'b> {
+impl <'b> View<'_> for Knob<'b> {
     fn element(&self) -> Option<String> {
         Some("knob".to_string())
     }
@@ -274,7 +274,7 @@ impl ArcTrack {
     }
 }
 
-impl View for ArcTrack {
+impl View<'_> for ArcTrack {
     fn draw(&self, cx: &mut Context, canvas: &mut crate::Canvas) {
         let opacity = cx.cache.get_opacity(cx.current);
 

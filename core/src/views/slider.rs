@@ -198,7 +198,7 @@ impl Slider {
     }
 }
 
-impl View for Slider {
+impl View<'_> for Slider {
     fn element(&self) -> Option<String> {
         Some("slider".to_string())
     }

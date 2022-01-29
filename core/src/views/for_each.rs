@@ -26,4 +26,4 @@ impl ForEach {
     }
 }
 
-impl View for ForEach {}
+impl View<'_> for ForEach {}

@@ -72,7 +72,7 @@ impl<'a, 'b> Handle<'a, 'b, Checkbox> {
     }
 }
 
-impl View for Checkbox {
+impl View<'_> for Checkbox {
     fn element(&self) -> Option<String> {
         Some("checkbox".to_string())
     }

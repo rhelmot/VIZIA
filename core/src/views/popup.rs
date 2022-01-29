@@ -94,7 +94,7 @@ impl Popup {
     }
 }
 
-impl View for Popup {
+impl View<'_> for Popup {
     fn element(&self) -> Option<String> {
         Some("popup".to_string())
     }

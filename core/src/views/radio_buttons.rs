@@ -12,7 +12,7 @@ impl RadioButton {
     }
 }
 
-impl View for RadioButton {
+impl View<'_> for RadioButton {
     fn element(&self) -> Option<String> {
         Some("radiobutton".to_string())
     }

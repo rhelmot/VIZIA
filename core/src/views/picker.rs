@@ -33,7 +33,7 @@ where
     }
 }
 
-impl<L: Lens> View for Picker<L> {
+impl<L: Lens> View<'_> for Picker<L> {
     fn element(&self) -> Option<String> {
         Some("picker".to_string())
     }
@@ -71,7 +71,7 @@ impl PickerItem {
     }
 }
 
-impl View for PickerItem {}
+impl View<'_> for PickerItem {}
 
 pub struct Dropdown {}
 
@@ -80,7 +80,7 @@ impl Dropdown {
     where
         L: 'static + Fn(&'a mut Context<'b>) -> Handle<'a, 'b, Label>,
         F: 'static + Fn(&mut Context),
-        Label: 'static + View,
+        Label: 'static + View<'b>,
     {
         Self {}
             .build2(cx, move |cx| {
@@ -102,7 +102,7 @@ impl Dropdown {
     }
 }
 
-impl View for Dropdown {
+impl View<'_> for Dropdown {
     fn element(&self) -> Option<String> {
         Some("dropdown".to_string())
     }

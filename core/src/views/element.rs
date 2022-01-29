@@ -11,7 +11,7 @@ impl Element {
     }
 }
 
-impl View for Element {
+impl View<'_> for Element {
     fn element(&self) -> Option<String> {
         Some("element".to_string())
     }

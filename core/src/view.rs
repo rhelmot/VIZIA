@@ -51,7 +51,7 @@ pub trait View<'b>: Sized {
         handle
     }
 
-    fn update<'a, 'b, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
+    fn update<'a, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
         F: 'static + FnOnce(&mut Context),
     {
@@ -87,7 +87,7 @@ pub trait View<'b>: Sized {
         handle
     }
 
-    fn build<'a, 'b>(mut self, cx: &'a mut Context<'b>) -> Handle<'a, 'b, Self> {
+    fn build<'a>(mut self, cx: &'a mut Context<'b>) -> Handle<'a, 'b, Self> {
         let id = if let Some(id) = cx.tree.get_child(cx.current, cx.count) {
             let prev = cx.current;
             cx.current = id;
@@ -730,9 +730,9 @@ pub trait View<'b>: Sized {
     }
 }
 
-impl<T: View> ViewHandler for T
+impl<'b, T> ViewHandler for T
 where
-    T: std::marker::Sized + View + 'static,
+    T: std::marker::Sized + View<'b> + 'static,
 {
     fn element(&self) -> Option<String> {
         <T as View>::element(&self)

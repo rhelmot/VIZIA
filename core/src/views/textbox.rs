@@ -808,7 +808,7 @@ where
     }
 }
 
-impl<L, T> View for Textbox<L, T>
+impl<L, T> View<'_> for Textbox<L, T>
 where
     L: Lens<Target = T>,
     T: Data + EditableText + 'static,

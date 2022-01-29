@@ -107,7 +107,7 @@ where
     }
 }
 
-impl<L: 'static + Lens> View for Binding<L> {
+impl<L: 'static + Lens> View<'_> for Binding<L> {
     fn body<'a>(&mut self, cx: &'a mut Context) {
         if let Some(builder) = self.builder.take() {
             //let prev = cx.current;
