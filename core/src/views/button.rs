@@ -9,11 +9,11 @@ pub struct Button {
 }
 
 impl Button {
-    pub fn new<A, L, Label>(cx: &mut Context, action: A, label: L) -> Handle<Self>
+    pub fn new<'a, 'b, A, L, Label>(cx: &'a mut Context<'b>, action: A, label: L) -> Handle<'a, 'b, Self>
     where
-        A: 'static + Fn(&mut Context),
-        L: 'static + Fn(&mut Context) -> Handle<Label>,
-        Label: 'static + View,
+        A: 'b + Fn(&mut Context),
+        L: Fn(&mut Context) -> Handle<'a, 'b, Label>,
+        Label: View,
     {
         Self { action: Some(Box::new(action)) }.build2(cx, move |cx| {
             (label)(cx);
