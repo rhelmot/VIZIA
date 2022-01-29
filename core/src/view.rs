@@ -19,7 +19,7 @@ pub trait View<'b>: Sized {
     fn body(&mut self, cx: &mut Context) {}
     fn build2<'a, F>(self, cx: &'a mut Context<'b>, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + FnOnce(&mut Context),
+        F: FnOnce(&mut Context),
     {
         // Add the instance to context unless it already exists
         let id = if let Some(id) = cx.tree.get_child(cx.current, cx.count) {
