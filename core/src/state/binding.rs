@@ -1,6 +1,7 @@
 use std::any::TypeId;
 use std::collections::HashSet;
 
+use better_any::{Tid, TidAble, impl_tid};
 use morphorm::{LayoutType, PositionType};
 
 use crate::{
@@ -18,6 +19,9 @@ where
     count: usize,
     builder: Option<Box<dyn Fn(&mut Context, Field<L>)>>,
 }
+
+#[impl_tid]
+impl<'b, L: Lens + 'static> TidAble<'b> for Binding<L> {}
 
 impl<L> Binding<L>
 where
