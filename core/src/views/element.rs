@@ -6,7 +6,7 @@ use crate::{Context, Handle, View};
 pub struct Element {}
 
 impl Element {
-    pub fn new(cx: &mut Context) -> Handle<Self> {
+    pub fn new<'a, 'b>(cx: &'a mut Context<'b>) -> Handle<'a, 'b, Self> {
         Self {}.build(cx)
     }
 }
