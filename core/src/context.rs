@@ -19,7 +19,7 @@ pub struct Context<'b> {
     pub tree: Tree,
     pub current: Entity,
     pub count: usize,
-    pub views: HashMap<Entity, Box<dyn ViewHandler>>,
+    pub views: HashMap<Entity, Box<dyn ViewHandler<'b>>>,
     pub data: SparseSet<ModelDataStore>,
     pub event_queue: VecDeque<Event>,
     pub listeners: HashMap<Entity, Box<dyn Fn(&mut dyn ViewHandler, &mut Context, &mut Event) + 'b>>,

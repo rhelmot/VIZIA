@@ -3,6 +3,7 @@ use crate::{
     Context, Event, FontOrId, Handle, ViewHandler,
 };
 
+use better_any::TidAble;
 use femtovg::{
     renderer::OpenGl, Align, Baseline, ImageFlags, Paint, Path, PixelFormat, RenderTarget,
 };
@@ -730,9 +731,9 @@ pub trait View<'b>: Sized {
     }
 }
 
-impl<'b, T> ViewHandler for T
+impl<'b, T> ViewHandler<'b> for T
 where
-    T: std::marker::Sized + View<'b> + 'static,
+    T: TidAble<'b> + std::marker::Sized + View<'b> + 'static,
 {
     fn element(&self) -> Option<String> {
         <T as View>::element(&self)

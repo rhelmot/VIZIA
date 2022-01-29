@@ -6,7 +6,7 @@ use crate::{Context, Entity, Event, Handle, MouseButton, View, ViewHandler, Wind
 
 // Press
 pub struct Press<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
@@ -68,7 +68,7 @@ impl<'b, V: View<'b>> View<'b> for Press<'b, V> {
 
 // Release
 pub struct Release<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
@@ -130,7 +130,7 @@ impl<'b, V: View<'b>> View<'b> for Release<'b, V> {
 
 // Hover
 pub struct Hover<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
@@ -190,7 +190,7 @@ impl<'b, V: View<'b>> View<'b> for Hover<'b, V> {
 
 // Hover
 pub struct Over<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
@@ -248,7 +248,7 @@ impl<'b, V: View<'b>> View<'b> for Over<'b, V> {
 
 // Leave
 pub struct Leave<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context)>>,
 
     p: PhantomData<V>,
@@ -308,7 +308,7 @@ impl<'b, V: View<'b>> View<'b> for Leave<'b, V> {
 
 // Move
 pub struct Move<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context, f32, f32)>>,
 
     p: PhantomData<V>,
@@ -366,7 +366,7 @@ impl<'b, V: View<'b>> View<'b> for Move<'b, V> {
 
 // Geo
 pub struct Geo<'b, V: View<'b>> {
-    view: Box<dyn ViewHandler>,
+    view: Box<dyn ViewHandler<'b>>,
     action: Option<Box<dyn Fn(&mut Context, GeometryChanged)>>,
 
     p: PhantomData<V>,
