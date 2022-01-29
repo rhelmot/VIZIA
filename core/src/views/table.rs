@@ -16,10 +16,10 @@ where
     builder: Option<Rc<dyn Fn(&mut Context, usize, ItemPtr<L, T>)>>,
 }
 
-impl<L: 'static + Lens<Target = Vec<T>>, T> Table<L, T> {
-    pub fn new<F>(cx: &mut Context, width: usize, lens: L, builder: F) -> Handle<Self>
+impl<L: Lens<Target = Vec<T>>, T> Table<L, T> {
+    pub fn new<'a, 'b, F>(cx: &'a mut Context<'b>, width: usize, lens: L, builder: F) -> Handle<'a, 'b, Self>
     where
-        F: 'static + Fn(&mut Context, usize, ItemPtr<L, T>),
+        F: 'static + Fn(&'a mut Context<'b>, usize, ItemPtr<L, T>),
         <L as Lens>::Source: Model,
     {
         Self { lens, width, builder: Some(Rc::new(builder)) }
