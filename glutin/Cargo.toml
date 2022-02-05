@@ -11,5 +11,5 @@ description = "Glutin backend for vizia"
 glutin = "0.28.0"
 femtovg = {git = "https://github.com/rhelmot/femtovg", rev = "4caba90e08e8eacf66dce2125393334a9cee22d1", default-features = false}
 keyboard-types = { version = "0.5.0", default-features = false }
-vizia_core = { path = "../core", version = "0.1"}
+vizia_core = { path = "../core", version = "0.1" }
 fnv = "1.0.7"
