@@ -26,7 +26,7 @@ impl Model for FallibleMarker {}
 impl<L> Binding<L>
 where
     L: 'static + Lens,
-    <L as Lens>::Source: 'static,
+    <L as Lens>::Source: 'static + Model,
     <L as Lens>::Target: Data,
 {
     pub fn new_fallible<F1, F2>(cx: &mut Context, lens: L, builder_some: F1, builder_none: F2)

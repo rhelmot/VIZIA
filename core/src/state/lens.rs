@@ -1,4 +1,3 @@
-use crate::Model;
 use std::any::TypeId;
 use std::fmt::{Debug, Formatter};
 use std::marker::PhantomData;
@@ -10,7 +9,7 @@ use std::ops::Deref;
 /// The `view()` method takes a reference to the struct type as input and outputs a reference to the field.
 /// This provides a way to specify a binding to a specific field of some application data.
 pub trait Lens: 'static + Clone + Copy + std::fmt::Debug {
-    type Source: Model;
+    type Source;
     type Target;
 
     fn view<'a>(&self, source: &'a Self::Source) -> Option<&'a Self::Target>;
@@ -133,7 +132,6 @@ where
     L: Lens<Source = I, Target = M>,
     M: 'static + Deref<Target = [O]>,
     O: 'static,
-    I: Model,
 {
     type Source = I;
     type Target = O;
