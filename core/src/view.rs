@@ -20,8 +20,9 @@ pub trait View: 'static + Sized {
     where
         F: 'static + FnOnce(&mut Context),
     {
-        // Add the instance to context unless it already exists
+        // Add the instance to context even if it already exists
         let id = if let Some(id) = cx.tree.get_child(cx.current, cx.count) {
+            cx.views.insert(id, Box::new(self));
             id
         } else {
             let id = cx.entity_manager.create();
@@ -43,42 +44,7 @@ pub trait View: 'static + Sized {
         handle.cx.count = 0;
 
         (builder)(handle.cx);
-
-        // This part will also be moved somewhere else
-        handle.cx.current = prev;
-        handle.cx.count = prev_count;
-
-        handle
-    }
-
-    fn update<F>(self, cx: &mut Context, builder: F) -> Handle<Self>
-    where
-        F: 'static + FnOnce(&mut Context),
-    {
-        // Add the instance to context unless it already exists
-        let id = if let Some(id) = cx.tree.get_child(cx.current, cx.count) {
-            cx.views.insert(id, Box::new(self));
-            id
-        } else {
-            let id = cx.entity_manager.create();
-            cx.tree.add(id, cx.current).expect("Failed to add to tree");
-            cx.cache.add(id).expect("Failed to add to cache");
-            cx.style.add(id);
-            cx.views.insert(id, Box::new(self));
-            id
-        };
-
-        cx.count += 1;
-
-        // ...and this part
-        let prev = cx.current;
-        let prev_count = cx.count;
-        cx.current = id;
-        cx.count = 0;
-
-        let handle = Handle { entity: id, p: Default::default(), cx };
-
-        (builder)(handle.cx);
+        handle.cx.remove_trailing_children();
 
         // This part will also be moved somewhere else
         handle.cx.current = prev;
@@ -94,6 +60,7 @@ pub trait View: 'static + Sized {
             let prev_count = cx.count;
             cx.count = 0;
             self.body(cx);
+            cx.remove_trailing_children();
             cx.current = prev;
             cx.count = prev_count;
 
@@ -110,6 +77,7 @@ pub trait View: 'static + Sized {
             let prev_count = cx.count;
             cx.count = 0;
             self.body(cx);
+            cx.remove_trailing_children();
             cx.current = prev;
             cx.count = prev_count;
             cx.views.insert(id, Box::new(self));

@@ -89,6 +89,14 @@ impl Context {
         }
     }
 
+    /// Remove any extra children that were cached in the tree but are no longer required
+    pub fn remove_trailing_children(&mut self) {
+        while let Some(child) = self.tree.get_child(self.current, self.count) {
+            self.remove(child);
+            self.count += 1;
+        }
+    }
+
     pub fn remove(&mut self, entity: Entity) {
         let delete_list = entity.branch_iter(&self.tree).collect::<Vec<_>>();
 

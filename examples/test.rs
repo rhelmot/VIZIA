@@ -4,6 +4,22 @@ const STYLE: &str = r#"
 
 "#;
 
+pub struct BranchingView {
+}
+
+impl View for BranchingView { }
+
+impl BranchingView {
+    pub fn new(cx: &mut Context, depth: usize) -> Handle<'_, Self> {
+        Self {}.build2(cx, move |cx| {
+            if depth > 0 {
+                Self::new(cx, depth - 1);
+                Self::new(cx, depth - 1);
+            }
+        })
+    }
+}
+
 #[derive(Default, Lens)]
 pub struct AppData {
     value: bool,
@@ -31,11 +47,19 @@ fn main() {
         cx.add_theme(STYLE);
 
         AppData::default().build(cx);
-        HStack::new(cx, |cx| {
-            Label::new(cx, "\u{e88a}");
-        })
-        .font_size(50.0)
-        .font("material");
+        Binding::new(cx, AppData::value, move |cx, _| {
+            let time_start = std::time::Instant::now();
+            BranchingView::new(cx, 18);
+            let time_end = std::time::Instant::now();
+            let duration = time_end - time_start;
+            println!("Build took {}ms", duration.as_millis());
+        });
+
+        Button::new(cx, move |cx| {
+            cx.emit(AppEvent::ToggleValue);
+        }, move |cx| {
+            Label::new(cx, "Rebuild")
+        });
     })
     .run();
 }

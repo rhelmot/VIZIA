@@ -142,6 +142,7 @@ impl<L: 'static + Lens> View for Binding<L> {
             cx.current = self.parent;
             cx.count = self.count;
             (builder)(cx, Field { lens: self.lens.clone() });
+            // TODO: uhhhhh should remove_trailing_children be called here?
             //cx.current = prev;
             //cx.count = count;
             self.builder = Some(builder);

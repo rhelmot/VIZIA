@@ -276,6 +276,7 @@ impl ApplicationRunner {
                 let prev_count = self.context.count;
                 self.context.count = 0;
                 view.body(&mut self.context);
+                cx.remove_trailing_children();
                 self.context.current = prev;
                 self.context.count = prev_count;
 
@@ -819,6 +820,7 @@ impl ApplicationRunner {
             if let Some(builder) = &builder {
                 (builder)(&mut self.context);
             }
+            cx.remove_trailing_children();
             self.context.enviroment.needs_rebuild = false;
         }
     }
