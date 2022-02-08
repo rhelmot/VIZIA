@@ -243,7 +243,6 @@ impl Application {
                         if let Some(builder) = &builder {
                             (builder)(&mut context);
                         }
-                        context.remove_trailing_children();
                         context.enviroment.needs_rebuild = false;
                     }
 
@@ -296,7 +295,6 @@ impl Application {
                             let prev_count = context.count;
                             context.count = 0;
                             view.body(&mut context);
-                            context.remove_trailing_children();
                             context.current = prev;
                             context.count = prev_count;
                             context.views.insert(*observer, view);

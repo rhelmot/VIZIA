@@ -4,6 +4,7 @@ use std::time::Instant;
 #[cfg(feature = "clipboard")]
 use copypasta::ClipboardContext;
 use femtovg::TextContext;
+use fnv::FnvHashMap;
 // use fluent_bundle::{FluentBundle, FluentResource};
 // use unic_langid::LanguageIdentifier;
 
@@ -20,7 +21,9 @@ pub struct Context {
     pub tree: Tree,
     pub current: Entity,
     pub count: usize,
-    pub views: HashMap<Entity, Box<dyn ViewHandler>>,
+    //pub views: HashMap<Entity, Box<dyn ViewHandler>>,
+    pub views: FnvHashMap<Entity, Box<dyn ViewHandler>>,
+    //pub views: SparseSet<Box<dyn ViewHandler>>,
     pub data: SparseSet<ModelDataStore>,
     pub event_queue: VecDeque<Event>,
     pub event_schedule: BinaryHeap<TimedEvent>,
@@ -58,7 +61,7 @@ impl Context {
             tree: Tree::new(),
             current: Entity::root(),
             count: 0,
-            views: HashMap::new(),
+            views: FnvHashMap::default(),
             data: SparseSet::new(),
             style: Style::default(),
             cache,
@@ -114,15 +117,15 @@ impl Context {
                     model.remove_observer(*entity);
                 }
             }
-
-            //println!("Removing: {}", entity);
+            
             self.tree.remove(*entity).expect("");
             self.cache.remove(*entity);
             self.style.remove(*entity);
             self.data.remove(*entity);
             self.entity_manager.destroy(*entity);
             self.views.remove(entity);
-        }
+
+        }   
     }
 
     /// Get stored data from the context.

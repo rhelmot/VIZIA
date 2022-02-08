@@ -44,7 +44,6 @@ pub trait View: 'static + Sized {
         handle.cx.count = 0;
 
         (builder)(handle.cx);
-        handle.cx.remove_trailing_children();
 
         // This part will also be moved somewhere else
         handle.cx.current = prev;
@@ -60,7 +59,6 @@ pub trait View: 'static + Sized {
             let prev_count = cx.count;
             cx.count = 0;
             self.body(cx);
-            cx.remove_trailing_children();
             cx.current = prev;
             cx.count = prev_count;
 
@@ -77,7 +75,6 @@ pub trait View: 'static + Sized {
             let prev_count = cx.count;
             cx.count = 0;
             self.body(cx);
-            cx.remove_trailing_children();
             cx.current = prev;
             cx.count = prev_count;
             cx.views.insert(id, Box::new(self));

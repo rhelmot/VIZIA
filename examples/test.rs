@@ -17,6 +17,7 @@ impl BranchingView {
                 Self::new(cx, depth - 1);
             }
         })
+        //.border_color(Color::red()).border_width(Pixels(1.0))
     }
 }
 
@@ -49,7 +50,7 @@ fn main() {
         AppData::default().build(cx);
         Binding::new(cx, AppData::value, move |cx, _| {
             let time_start = std::time::Instant::now();
-            BranchingView::new(cx, 18);
+            BranchingView::new(cx, 15);
             let time_end = std::time::Instant::now();
             let duration = time_end - time_start;
             println!("Build took {}ms", duration.as_millis());
