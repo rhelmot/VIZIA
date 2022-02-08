@@ -96,7 +96,6 @@ impl Context {
     pub fn remove_trailing_children(&mut self) {
         while let Some(child) = self.tree.get_child(self.current, self.count) {
             self.remove(child);
-            self.count += 1;
         }
     }
 

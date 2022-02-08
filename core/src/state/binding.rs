@@ -17,10 +17,6 @@ where
     builder: Option<Box<dyn Fn(&mut Context, Field<L>)>>,
 }
 
-struct FallibleMarker(bool, usize);
-
-impl Model for FallibleMarker {}
-
 impl<L> Binding<L>
 where
     L: 'static + Lens,
@@ -34,35 +30,10 @@ where
     {
         Self::new(cx, lens, move |cx, field| {
             let some = field.get_fallible(cx).is_some();
-            let real_current = cx.current;
-            let fake_current = cx.tree.get_child(cx.current, cx.count - 1).unwrap();
-
-            cx.current = fake_current;
-            let (stored_some, stored_count, force) = cx.data::<FallibleMarker>()
-                .map(|dat| (dat.0, dat.1, false))
-                .unwrap_or((false, 0, true));
-            cx.current = real_current;
-
-            if some != stored_some {
-                for child in cx.current.child_iter(&cx.tree)
-                    .enumerate()
-                    .filter(|(idx, _)| *idx >= cx.count && *idx < cx.count + stored_count)
-                    .map(|(_, e)| e)
-                    .collect::<Vec<_>>()
-                {
-                    cx.remove(child);
-                }
-            }
-            let start_count = cx.count;
             if some {
                 builder_some(cx, field);
             } else {
                 builder_none(cx);
-            }
-            if some != stored_some || force {
-                cx.current = fake_current;
-                FallibleMarker(some, cx.count - start_count).build(cx);
-                cx.current = real_current;
             }
         })
     }
