@@ -117,7 +117,7 @@ impl<L: 'static + Lens<Target = Vec<T>>, T: Data> List<L, T> {
             Binding::new(cx, lens.clone(), move |cx, list| {
                 // If the number of list items is different to the number of children of the ListView
                 // then remove and rebuild all the children
-                let list_len = list.get(cx).len();
+                let list_len = list.get_fallible(cx).map(|list| list.len()).unwrap_or(0);
                 let children = cx
                     .current
                     .child_iter(&cx.tree)
