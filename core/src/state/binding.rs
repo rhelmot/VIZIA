@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use morphorm::{LayoutType, PositionType};
 
-use crate::{Color, Context, Display, Entity, Handle, StateStore, TreeExt, Units, View, Visibility};
+use crate::{Color, Context, Display, Handle, StateStore, TreeExt, Units, View, Visibility};
 
 use crate::{Data, Lens, Model};
 
