@@ -325,6 +325,7 @@ pub struct ContextProxy {
     pub event_proxy: Option<Box<dyn EventProxy>>,
 }
 
+#[derive(Debug)]
 pub enum ProxyEmitError {
     Unsupported,
     EventLoopClosed,
