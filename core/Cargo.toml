@@ -13,9 +13,11 @@ clipboard = ["copypasta"]
 
 [dependencies]
 vizia_derive = {version = "0.1.0", path = "../derive"}
-femtovg = { version = "0.3.0", default-features = false, features = ["image-loading"] }
+# femtovg = { version = "0.3.0", default-features = false, features = ["image-loading"] }
+femtovg = { git = "https://github.com/rhelmot/femtovg", rev = "1a24194e9177f5481066981e1f2325aa0f60c6b1", features = ["image-loading"] }
 image = { version = "0.24.0", default-features = false, features = ["png"] } # inherited from femtovg
-morphorm = {git = "https://github.com/vizia/morphorm", features = ["rounding"], rev = "8d955d2f1d5b698e4fd1dbdfe36b3f3d9adbd19a" }
+# morphorm = {git = "https://github.com/vizia/morphorm", features = ["rounding"], rev = "8d955d2f1d5b698e4fd1dbdfe36b3f3d9adbd19a" }
+morphorm = {git = "https://github.com/rhelmot/morphorm", features = ["rounding"], rev = "78c362a6c9b0665936f36730487e55e89f60c2a4" }
 bitflags = "1.3.2"
 fnv = "1.0.7"
 keyboard-types = { version = "0.5.0", default-features = false }

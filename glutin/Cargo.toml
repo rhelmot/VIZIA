@@ -9,7 +9,8 @@ description = "Glutin backend for vizia"
 
 [dependencies]
 glutin = "0.28.0"
-femtovg = {version = "0.3.0", default-features = false, features = ["glutin"]}
+# femtovg = {version = "0.3.0", default-features = false, features = ["glutin"]}
+femtovg = { git = "https://github.com/rhelmot/femtovg", rev = "1a24194e9177f5481066981e1f2325aa0f60c6b1", features = ["image-loading"] }
 keyboard-types = { version = "0.5.0", default-features = false }
 vizia_core = { path = "../core", version = "0.1" }
 fnv = "1.0.7"
