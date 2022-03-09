@@ -136,8 +136,8 @@ pub trait Res<T> {
         Some(self.get_val(cx))
     }
     fn set_or_bind<F>(&self, cx: &mut Context, entity: Entity, closure: F)
-    where
-        F: 'static + Clone + Fn(&mut Context, Entity, T);
+        where
+            F: 'static + Clone + Fn(&mut Context, Entity, T);
 }
 
 impl_res_simple!(i8);
@@ -157,18 +157,18 @@ impl_res_simple!(bool);
 impl_res_simple!(f32);
 impl_res_simple!(f64);
 
+
 impl<T, L> Res<T> for L
 where
-    L: Lens + LensExt,
-    <L as Lens>::Target: Res<T> + Data,
+    L: Lens<Target = T> + LensExt,
     T: Clone + Data,
 {
     fn get_val(&self, cx: &Context) -> T {
-        self.get(cx).take().get_val(cx)
+        self.get(cx).take()
     }
 
     fn get_val_fallible(&self, cx: &Context) -> Option<T> {
-        self.get_fallible(cx).and_then(|x| x.take().get_val_fallible(cx))
+        self.get_fallible(cx).map(|x| x.take())
     }
 
     fn set_or_bind<F>(&self, cx: &mut Context, entity: Entity, closure: F)
@@ -251,19 +251,6 @@ impl Res<Units> for Units {
         F: 'static + Fn(&mut Context, Entity, Self),
     {
         (closure)(cx, entity, *self);
-    }
-}
-
-impl Res<Units> for f32 {
-    fn get_val(&self, _: &Context) -> Units {
-        Units::Pixels(*self)
-    }
-
-    fn set_or_bind<F>(&self, cx: &mut Context, entity: Entity, closure: F)
-    where
-        F: 'static + Fn(&mut Context, Entity, Units),
-    {
-        (closure)(cx, entity, Units::Pixels(*self));
     }
 }
 
