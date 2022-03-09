@@ -159,15 +159,16 @@ impl_res_simple!(f64);
 
 impl<T, L> Res<T> for L
 where
-    L: Lens<Target = T> + LensExt,
+    L: Lens + LensExt,
+    <L as Lens>::Target: Res<T> + Data,
     T: Clone + Data,
 {
     fn get_val(&self, cx: &Context) -> T {
-        self.get(cx).take()
+        self.get(cx).take().get_val(cx)
     }
 
     fn get_val_fallible(&self, cx: &Context) -> Option<T> {
-        self.get_fallible(cx).map(|x| x.take())
+        self.get_fallible(cx).and_then(|x| x.take().get_val_fallible(cx))
     }
 
     fn set_or_bind<F>(&self, cx: &mut Context, entity: Entity, closure: F)
@@ -214,6 +215,19 @@ impl<'s> Res<&'s String> for &'s String {
     }
 }
 
+impl Res<String> for String {
+    fn get_val(&self, _: &Context) -> String {
+        self.clone()
+    }
+
+    fn set_or_bind<F>(&self, cx: &mut Context, entity: Entity, closure: F)
+    where
+        F: 'static + Fn(&mut Context, Entity, Self),
+    {
+        (closure)(cx, entity, self.clone());
+    }
+}
+
 impl Res<Color> for Color {
     fn get_val(&self, _: &Context) -> Color {
         *self
@@ -237,6 +251,19 @@ impl Res<Units> for Units {
         F: 'static + Fn(&mut Context, Entity, Self),
     {
         (closure)(cx, entity, *self);
+    }
+}
+
+impl Res<Units> for f32 {
+    fn get_val(&self, _: &Context) -> Units {
+        Units::Pixels(*self)
+    }
+
+    fn set_or_bind<F>(&self, cx: &mut Context, entity: Entity, closure: F)
+    where
+        F: 'static + Fn(&mut Context, Entity, Units),
+    {
+        (closure)(cx, entity, Units::Pixels(*self));
     }
 }
 
