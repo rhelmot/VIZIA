@@ -29,7 +29,7 @@ use crate::{
 use crate::{AnimExt, Animation, AnimationBuilder};
 
 static DEFAULT_THEME: &str = include_str!("../default_theme.css");
-static DEFAULT_LAYOUT: &str = include_str!("default_layout.css");
+static DEFAULT_LAYOUT: &str = include_str!("../default_layout.css");
 const DOUBLE_CLICK_INTERVAL: Duration = Duration::from_millis(500);
 
 pub struct Context {
