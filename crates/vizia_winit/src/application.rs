@@ -405,9 +405,11 @@ impl Application {
                             cx.cache().set_width(Entity::root(), physical_size.width as f32);
                             cx.cache().set_height(Entity::root(), physical_size.height as f32);
 
-                            let mut bounding_box = BoundingBox::default();
-                            bounding_box.w = physical_size.width as f32;
-                            bounding_box.h = physical_size.height as f32;
+                            let bounding_box = BoundingBox {
+                                w: physical_size.width as f32,
+                                h: physical_size.height as f32,
+                                ..Default::default()
+                            };
 
                             cx.cache().set_clip_region(Entity::root(), bounding_box);
 
