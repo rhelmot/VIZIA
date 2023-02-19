@@ -175,8 +175,8 @@ impl<'i> cssparser::AtRuleParser<'i> for RuleParser {
     */
 }
 
-fn parse_selectors<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_selectors<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<Vec<Selector>, ParseError<'i, CustomParseError>> {
     let mut selectors: Vec<Selector> = Vec::new();
 
@@ -512,8 +512,8 @@ fn css_string(name: &str) -> Option<String> {
     Some(String::from(name))
 }
 
-fn parse_unknown<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_unknown<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<PropType, ParseError<'i, CustomParseError>> {
     Ok(match input.next()? {
         Token::QuotedString(s) => match css_string(s) {
@@ -547,8 +547,8 @@ fn parse_unknown<'i, 't>(
     })
 }
 
-fn parse_string<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_string<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<String, ParseError<'i, CustomParseError>> {
     Ok(match input.next()? {
         Token::QuotedString(s) => match css_string(s) {
@@ -595,8 +595,8 @@ fn parse_string<'i, 't>(
 //     })
 // }
 
-fn parse_length_or_percentage<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_length_or_percentage<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<f32, ParseError<'i, CustomParseError>> {
     Ok(match input.next()? {
         Token::Number { value: x, .. } => *x,
@@ -613,9 +613,7 @@ fn parse_length_or_percentage<'i, 't>(
     })
 }
 
-fn parse_z_index<'i, 't>(
-    input: &mut Parser<'i, 't>,
-) -> Result<i32, ParseError<'i, CustomParseError>> {
+fn parse_z_index<'i>(input: &mut Parser<'i, '_>) -> Result<i32, ParseError<'i, CustomParseError>> {
     Ok(match input.next()? {
         Token::Number { value: x, .. } => *x as i32,
         t => {
@@ -668,8 +666,8 @@ fn parse_z_index<'i, 't>(
 // }
 
 //TODO
-fn parse_box_shadow<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_box_shadow<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<BoxShadow, ParseError<'i, CustomParseError>> {
     let mut box_shadow = BoxShadow::default();
 
@@ -755,8 +753,8 @@ fn parse_length2<'i>(token: &Token<'i>) -> Result<Units, ParseError<'i, CustomPa
     }
 }
 
-fn parse_transition2<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_transition2<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<Transition, ParseError<'i, CustomParseError>> {
     let mut transition = Transition::new();
 
@@ -805,9 +803,7 @@ fn parse_transition2<'i, 't>(
     })
 }
 
-fn parse_units<'i, 't>(
-    input: &mut Parser<'i, 't>,
-) -> Result<Units, ParseError<'i, CustomParseError>> {
+fn parse_units<'i>(input: &mut Parser<'i, '_>) -> Result<Units, ParseError<'i, CustomParseError>> {
     Ok(match input.next()? {
         Token::Number { value: x, .. } => Units::Pixels(*x),
         Token::Percentage { unit_value: x, .. } => Units::Percentage(*x * 100.0),
@@ -832,8 +828,8 @@ fn parse_units<'i, 't>(
     })
 }
 
-fn parse_position_type<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_position_type<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<PositionType, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -857,8 +853,8 @@ fn parse_position_type<'i, 't>(
     })
 }
 
-fn parse_cursor<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_cursor<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<CursorIcon, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -916,8 +912,8 @@ fn parse_cursor<'i, 't>(
     })
 }
 
-fn parse_display<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_display<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<Display, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -941,9 +937,7 @@ fn parse_display<'i, 't>(
     })
 }
 
-fn parse_bool<'i, 't>(
-    input: &mut Parser<'i, 't>,
-) -> Result<bool, ParseError<'i, CustomParseError>> {
+fn parse_bool<'i>(input: &mut Parser<'i, '_>) -> Result<bool, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
     Ok(match input.next()? {
@@ -971,8 +965,8 @@ fn parse_bool<'i, 't>(
     })
 }
 
-fn parse_visibility<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_visibility<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<Visibility, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -996,8 +990,8 @@ fn parse_visibility<'i, 't>(
     })
 }
 
-fn parse_overflow<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_overflow<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<Overflow, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -1021,8 +1015,8 @@ fn parse_overflow<'i, 't>(
     })
 }
 
-fn parse_border_corner_shape<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_border_corner_shape<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<BorderCornerShape, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -1046,8 +1040,8 @@ fn parse_border_corner_shape<'i, 't>(
     })
 }
 
-fn parse_layout_type<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_layout_type<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<LayoutType, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
@@ -1072,9 +1066,7 @@ fn parse_layout_type<'i, 't>(
     })
 }
 
-fn parse_color<'i, 't>(
-    input: &mut Parser<'i, 't>,
-) -> Result<Color, ParseError<'i, CustomParseError>> {
+fn parse_color<'i>(input: &mut Parser<'i, '_>) -> Result<Color, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
     Ok(match input.next()? {
@@ -1137,8 +1129,8 @@ fn parse_color2<'i>(token: &Token<'i>) -> Result<Color, ParseError<'i, CustomPar
     }
 }
 
-fn parse_font_weight<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_font_weight<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<Weight, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
     Ok(match input.next()? {
@@ -1164,8 +1156,8 @@ fn parse_font_weight<'i, 't>(
     })
 }
 
-fn parse_font_style<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_font_style<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<FontStyle, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
     Ok(match input.next()? {
@@ -1182,8 +1174,8 @@ fn parse_font_style<'i, 't>(
     })
 }
 
-pub(crate) fn parse_font_family<'i, 't>(
-    input: &mut Parser<'i, 't>,
+pub(crate) fn parse_font_family<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<FamilyOwned, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
     match input.next()? {
@@ -1203,8 +1195,8 @@ pub(crate) fn parse_font_family<'i, 't>(
     }
 }
 
-fn parse_font_size<'i, 't>(
-    input: &mut Parser<'i, 't>,
+fn parse_font_size<'i>(
+    input: &mut Parser<'i, '_>,
 ) -> Result<f32, ParseError<'i, CustomParseError>> {
     let location = input.current_source_location();
 
