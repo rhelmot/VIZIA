@@ -207,7 +207,7 @@ pub(crate) fn compute_matched_rules<'a>(
     }
 }
 
-fn link_style_data(style: &mut Style, entity: Entity, matched_rules: &Vec<Rule>) {
+fn link_style_data(style: &mut Style, entity: Entity, matched_rules: &[Rule]) {
     let mut should_relayout = false;
     let mut should_redraw = false;
     let mut should_reorder = false;
