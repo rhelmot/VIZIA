@@ -8,6 +8,10 @@ pub trait EditableText: Clone {
     fn edit(&mut self, range: Range<usize>, txt: impl Into<String>);
     /// Length of the text
     fn len(&self) -> usize;
+    /// If text is empty
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
     /// Get the previous grapheme offset from the current offset if it exists
     fn prev_grapheme_offset(&self, current: usize) -> Option<usize>;
     /// Get the next grapheme offset from the current offset if it exists
