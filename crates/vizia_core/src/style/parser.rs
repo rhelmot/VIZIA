@@ -669,10 +669,11 @@ fn parse_z_index<'i>(input: &mut Parser<'i, '_>) -> Result<i32, ParseError<'i, C
 fn parse_box_shadow<'i>(
     input: &mut Parser<'i, '_>,
 ) -> Result<BoxShadow, ParseError<'i, CustomParseError>> {
-    let mut box_shadow = BoxShadow::default();
+    let horizontal_offset = parse_length2(input.next()?)?;
+    let vertical_offset = parse_length2(input.next()?)?;
 
-    box_shadow.horizontal_offset = parse_length2(input.next()?)?;
-    box_shadow.vertical_offset = parse_length2(input.next()?)?;
+    let mut box_shadow = BoxShadow { horizontal_offset, vertical_offset, ..Default::default() };
+
     let next_token = input.next()?;
     let color = if let Ok(units) = parse_length2(next_token) {
         box_shadow.blur_radius = units;
