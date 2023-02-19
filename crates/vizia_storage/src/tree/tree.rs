@@ -19,6 +19,15 @@ where
     pub z_order: Vec<i32>,
 }
 
+impl<I> Default for Tree<I>
+where
+    I: GenerationalId,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<I> Tree<I>
 where
     I: GenerationalId,

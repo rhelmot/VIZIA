@@ -306,6 +306,12 @@ impl<T> UnwrapLens<T> {
     }
 }
 
+impl<T> Default for UnwrapLens<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> Copy for UnwrapLens<T> {}
 
 impl<T: 'static> Lens for UnwrapLens<T> {
@@ -326,6 +332,12 @@ pub struct IntoLens<T, U> {
 impl<T, U> IntoLens<T, U> {
     pub fn new() -> Self {
         Self { t: Default::default(), u: Default::default() }
+    }
+}
+
+impl<T, U> Default for IntoLens<T, U> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

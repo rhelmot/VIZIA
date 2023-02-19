@@ -33,6 +33,12 @@ impl DrawCache {
     }
 }
 
+impl Default for DrawCache {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// A restricted context used when drawing.
 pub struct DrawContext<'a> {
     pub(crate) current: Entity,

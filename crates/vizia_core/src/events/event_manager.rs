@@ -18,6 +18,7 @@ const DOUBLE_CLICK_INTERVAL: Duration = Duration::from_millis(500);
 /// The [EventManager] is responsible for taking the events in the event queue in context
 /// and dispatching them to views and models based on the target and propagation metadata of the event.
 #[doc(hidden)]
+#[derive(Default)]
 pub struct EventManager {
     // Queue of events to be processed
     event_queue: Vec<Event>,
@@ -25,7 +26,7 @@ pub struct EventManager {
 
 impl EventManager {
     pub fn new() -> Self {
-        EventManager { event_queue: Vec::new() }
+        Self::default()
     }
 
     /// Flush the event queue, dispatching events to their targets.

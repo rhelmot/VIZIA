@@ -51,6 +51,15 @@ where
     entries: HashMap<KeyChord, Vec<KeymapEntry<T>>>,
 }
 
+impl<T> Default for Keymap<T>
+where
+    T: 'static + Clone + PartialEq + Send + Sync,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> Keymap<T>
 where
     T: 'static + Clone + PartialEq + Send + Sync,
