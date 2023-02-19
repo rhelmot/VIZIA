@@ -338,15 +338,15 @@ impl View for MenuButton {
     }
 
     fn event(&mut self, cx: &mut EventContext, event: &mut Event) {
-        event.map(|window_event, meta| match window_event {
-            WindowEvent::PressDown { .. } => {
-                if let Some(callback) = &self.action {
-                    callback(cx);
-                    cx.emit(MenuEvent::Close);
-                    meta.consume();
-                }
+        event.map(|window_event, meta| {
+            if !matches!(window_event, WindowEvent::PressDown { .. }) {
+                return;
             }
-            _ => {}
+            if let Some(callback) = &self.action {
+                callback(cx);
+                cx.emit(MenuEvent::Close);
+                meta.consume();
+            }
         });
     }
 }

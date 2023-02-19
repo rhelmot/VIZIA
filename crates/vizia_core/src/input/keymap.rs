@@ -178,15 +178,13 @@ where
             KeymapEvent::InsertAction(chord, entry) => self.insert(*chord, entry.clone()),
             KeymapEvent::RemoveAction(chord, action) => self.remove(chord, action),
         });
-        event.map(|window_event, _| match window_event {
-            WindowEvent::KeyDown(code, _) => {
-                if let Some(entries) = self.entries.get(&KeyChord::new(*cx.modifiers, *code)) {
-                    for entry in entries {
-                        (entry.on_action())(cx)
-                    }
+        event.map(|window_event, _| {
+            let WindowEvent::KeyDown(code, _) = window_event else { return };
+            if let Some(entries) = self.entries.get(&KeyChord::new(*cx.modifiers, *code)) {
+                for entry in entries {
+                    (entry.on_action())(cx)
                 }
             }
-            _ => {}
         })
     }
 }

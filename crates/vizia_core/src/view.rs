@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, resource::StoredImage};
 use std::{any::Any, collections::HashMap};
 
 use crate::events::ViewHandler;
@@ -438,15 +438,10 @@ fn draw_view(cx: &mut DrawContext, canvas: &mut Canvas) {
     // background-image overrides gradient
     // TODO should we draw image on top of colors?
     if let Some(background_image) = cx.background_image() {
-        if let Some(img) = cx.resource_manager.images.get(background_image) {
-            match img.image {
-                ImageOrId::Id(id, dim) => {
-                    paint =
-                        Paint::image(id, bounds.x, bounds.y, dim.0 as f32, dim.1 as f32, 0.0, 1.0);
-                }
-
-                _ => {}
-            }
+        if let Some(&StoredImage { image: ImageOrId::Id(id, dim), .. }) =
+            cx.resource_manager.images.get(background_image)
+        {
+            paint = Paint::image(id, bounds.x, bounds.y, dim.0 as f32, dim.1 as f32, 0.0, 1.0);
         }
     }
 

@@ -671,39 +671,18 @@ fn parse_box_shadow<'i>(
 ) -> Result<BoxShadow, ParseError<'i, CustomParseError>> {
     let mut box_shadow = BoxShadow::default();
 
-    match parse_length2(input.next()?) {
-        Ok(units) => {
-            box_shadow.horizontal_offset = units;
-            match parse_length2(input.next()?) {
-                Ok(units) => {
-                    box_shadow.vertical_offset = units;
-                    let next_token = input.next()?;
-                    match parse_length2(next_token) {
-                        Ok(units) => {
-                            box_shadow.blur_radius = units;
+    box_shadow.horizontal_offset = parse_length2(input.next()?)?;
+    box_shadow.vertical_offset = parse_length2(input.next()?)?;
+    let next_token = input.next()?;
+    let color = if let Ok(units) = parse_length2(next_token) {
+        box_shadow.blur_radius = units;
 
-                            let next_token = input.next()?;
-                            match parse_color2(next_token) {
-                                Ok(color) => box_shadow.color = color,
-
-                                _ => {}
-                            }
-                        }
-                        _ => {
-                            // Parse a color
-                            match parse_color2(next_token) {
-                                Ok(color) => box_shadow.color = color,
-
-                                _ => {}
-                            }
-                        }
-                    }
-                }
-                Err(error) => return Err(error),
-            }
-        }
-
-        Err(error) => return Err(error),
+        input.next()?
+    } else {
+        next_token
+    };
+    if let Ok(color) = parse_color2(color) {
+        box_shadow.color = color
     }
 
     Ok(box_shadow)
