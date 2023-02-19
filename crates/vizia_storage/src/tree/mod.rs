@@ -8,6 +8,7 @@ mod hierarchy;
 mod iter;
 mod tour_direction;
 mod tour_step;
+#[allow(clippy::module_inception)]
 mod tree;
 mod tree_error;
 mod tree_ext;

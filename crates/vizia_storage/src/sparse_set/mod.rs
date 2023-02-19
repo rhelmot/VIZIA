@@ -1,11 +1,10 @@
 mod entry;
 mod error;
+mod generic;
 mod index;
-mod sparse_set;
 
 pub use self::{
-    entry::Entry,
-    error::SparseSetError,
-    index::SparseSetIndex,
-    sparse_set::{SparseSet, SparseSetGeneric},
+    entry::Entry, error::SparseSetError, generic::SparseSetGeneric, index::SparseSetIndex,
 };
+
+pub type SparseSet<V> = SparseSetGeneric<usize, V>;

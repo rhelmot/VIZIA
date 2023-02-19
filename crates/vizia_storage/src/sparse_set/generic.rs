@@ -1,8 +1,6 @@
 use crate::{Entry, SparseSetError, SparseSetIndex};
 use vizia_id::GenerationalId;
 
-pub type SparseSet<V> = SparseSetGeneric<usize, V>;
-
 /// A generic sparse set data structure.
 #[derive(Debug, Clone)]
 pub struct SparseSetGeneric<I, V>

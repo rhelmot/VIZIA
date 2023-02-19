@@ -42,6 +42,7 @@
 //! ```compile_fail
 //! entity.play_animation(animation_id);
 //! ```
+#[allow(clippy::module_inception)]
 mod animation;
 pub use animation::Animation;
 
